@@ -204,7 +204,7 @@ public class FavoriteMovieCollection implements Serializable, Cloneable {
      * <b>Notes:</b>
      * <ul>
      *  <li>
-     *    This method is efficient (O(1)) when deleting an element but, it takes
+     *    This method is efficient (O(1)) when deleting a movie but, it takes
      *    O(n) time to find the movie to delete this way.
      *  </li>
      * </ul>
@@ -238,6 +238,59 @@ public class FavoriteMovieCollection implements Serializable, Cloneable {
                 break;
             }
         }
+
+        return answer;
+    }
+
+    /**
+     * Removes the FavoriteMovie from the collection at the specified index.
+     * <p>  
+     * <b>Precondition:</b>
+     * <ul>
+     * 	<li>
+     * 	  The collection is not empty.
+     * 	</li>
+     * 	<li>
+     * 	  index is &gt;= 0 and &lt; size().
+     * 	</li>
+     * </ul>
+     * <p>  
+     * <b>Postcondition:</b>
+     * <ul>
+     * 	<li>
+     * 	  The <code>favoriteMovie</code> was removed from this collection if it,
+     *    was in the collection. the return value is the
+     *    <code>favoriteMovie</code> that was just deleted from the collection.
+     * 	</li>
+     * </ul>
+     * <p>
+     * <b>Notes:</b>
+     * <ul>
+     *  <li>
+     *    This method is efficient (O(1)) when deleting a movie.
+     *  </li>
+     * </ul>
+     * @param index
+     * 	The index to remove from the collection. Must be &gt;= 0 and &lt; size()
+     * @return
+     *  Returns the FavoriteMovie that was removed from the collection or null.
+     * @throws IllegalArgumentException
+     *  Indicates that index is not &gt;= 0 and &lt; size().
+     * @throws IllegalStateException
+     *  Indicates that the collection is empty.
+     */
+    public FavoriteMovie delete(int index) {
+        if (empty()) {
+            throw new IllegalStateException("Cannot delete from an empty collection.");
+        }
+        
+        if (index < 0 || index >= numberOfMovies) {
+            throw new IllegalArgumentException("index must be >= 0 and < size().");
+        }
+
+        FavoriteMovie answer = movies[index];
+        movies[index] = movies[numberOfMovies-- - 1];
+        movies[numberOfMovies] = null;
 
         return answer;
     }
@@ -387,17 +440,26 @@ public class FavoriteMovieCollection implements Serializable, Cloneable {
 
     /**
      * 
-     * @param index
-     * @return 
+     * @param index The zero based index for the desired FavoriteMovie. Must be
+     * &gt;= 0 and &lt; size().
+     * @return The FavoriteMovie at the specified index.
+     * @throws IllegalArgumentException indicates that index is &lt; 0 or &gt;= size()
      */
     public FavoriteMovie getFavoriteMovie(int index) {
-        FavoriteMovie answer = null;
+        if (empty()) {
+            throw new IllegalStateException("The collection is empty.");
+        }
         
-        return answer;
+        if (index < 0 || index >= numberOfMovies) {
+            throw new IllegalArgumentException("index: " + index + " - index must be >= 0 and < size()");
+        }
+        
+        return movies[index];
     }
+    
     /**
-     * Returns the first occurrence of the search title found in the 
-     * collection.
+     * Returns the index for the first instance of title found in the collection.
+     * If title is not found in the collection, -1 is returned.
      * <p>  
      * <b>Precondition:</b>
      * <ul>
@@ -422,13 +484,14 @@ public class FavoriteMovieCollection implements Serializable, Cloneable {
      * @param title
      * 	The title to search for, which may be the null reference.
      * @return
-     * 	the first FavoriteMovie that matches the specified <code>title</code> in
-     * 	the collection. If there is no such title, then null is returned.
+     * 	the index for the first FavoriteMovie that matches the specified
+     *  <code>title</code> in the collection. If there is no such title, then -1
+     *  is returned.
      * @throws IllegalStateException
      *  Indicates that the collection is empty.
      */
-    public FavoriteMovie search(String title) {
-        FavoriteMovie answer = null;
+    public int search(String title) {
+        int answer = -1;
 
         if (empty()) {
             throw new IllegalStateException("Cannot search an empty collection.");
@@ -439,7 +502,7 @@ public class FavoriteMovieCollection implements Serializable, Cloneable {
             for (int i = 0; i < numberOfMovies; i++) {
                 FavoriteMovie fm = movies[i];
                 if (fm != null && fm.getTitle() == null) {
-                    answer = fm;
+                    answer = i;
                     break;
                 }
             }
@@ -447,11 +510,12 @@ public class FavoriteMovieCollection implements Serializable, Cloneable {
             for (int i = 0; i < numberOfMovies; i++) {
                 FavoriteMovie fm = movies[i];
                 if (fm != null && fm.getTitle() != null && title.toLowerCase().equals(fm.getTitle().toLowerCase())) {
-                    answer = fm;
+                    answer = i;
                     break;
                 }
             }
         }
+        
         return answer;
     }
 
