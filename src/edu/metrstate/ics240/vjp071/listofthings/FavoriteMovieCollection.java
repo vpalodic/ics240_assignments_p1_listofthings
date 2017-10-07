@@ -439,13 +439,13 @@ public class FavoriteMovieCollection implements Serializable, Cloneable {
     }
 
     /**
-     * 
+     * Returns the FavoriteMovie found at index.
      * @param index The zero based index for the desired FavoriteMovie. Must be
      * &gt;= 0 and &lt; size().
      * @return The FavoriteMovie at the specified index.
      * @throws IllegalArgumentException indicates that index is &lt; 0 or &gt;= size()
      */
-    public FavoriteMovie getFavoriteMovie(int index) {
+    public FavoriteMovie getAt(int index) {
         if (empty()) {
             throw new IllegalStateException("The collection is empty.");
         }
