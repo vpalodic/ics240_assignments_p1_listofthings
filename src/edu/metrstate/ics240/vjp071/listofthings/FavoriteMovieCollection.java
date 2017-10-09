@@ -5,10 +5,9 @@
  */
 package edu.metrstate.ics240.vjp071.listofthings;
 
-import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Iterator;
-import javax.swing.ListModel;
-import javax.swing.event.ListDataListener;
+import javax.swing.AbstractListModel;
 
 /**
  * The FavoriteMovieCollection class represents a collection of FavoriteMovie
@@ -38,7 +37,7 @@ import javax.swing.event.ListDataListener;
  * @author Vincent J Palodichuk
  * <A HREF="mailto:hu0011wy@metrostate.edu"> (e-mail me) </A>
  */
-public class FavoriteMovieCollection implements Serializable, Cloneable, Iterable<FavoriteMovie>, ListModel<String> {
+public class FavoriteMovieCollection  extends AbstractListModel<String> implements Cloneable, Iterable<FavoriteMovie> {
 
     private static int DEFAULT_INITIAL_CAPACITY = 16;
     private FavoriteMovie[] movies;
@@ -170,6 +169,154 @@ public class FavoriteMovieCollection implements Serializable, Cloneable, Iterabl
         movies[numberOfMovies++] = favoriteMovie;
 
         return favoriteMovie;
+    }
+
+    /**
+     * Adds the <code>favoriteMovie</code> to the end this collection.
+     * <p>
+     * <b>Precondition:</b>
+     * <ul>
+     * <li>
+     * favoriteMovie is not null.
+     * </li>
+     * </ul>
+     * <p>
+     * <b>Postcondition:</b>
+     * <ul>
+     * <li>
+     * The <code>favoriteMovie</code> was added to the end of this collection,
+     * the number of movies in this collection has been updated to reflect the
+     * new movie, and the return value is the <code>favoriteMovie</code> that
+     * was just added to the collection.
+     * </li>
+     * </ul>
+     * <p>
+     * <b>Notes:</b>
+     * <ul>
+     * <li>
+     * This method is efficient (O(1)) up to when the capacity has been reached.
+     * When this happens, the capacity of the collection is doubled, so future
+     * calls will be efficient again.
+     * </li>
+     * <li>
+     * If the collection becomes so large that capacity reaches
+     * Integer.MAX_VALUE, there will be an arithmetic overflow and the add will
+     * fail.
+     * </li>
+     * </ul>
+     *
+     * @param imdb The IMDB number of the movie, which may be null.
+     * @param title The Title of the movie, which may be null.
+     * @param releaseDate The Release Date of the movie, which may be null.
+     * @param writer The Writer of the movie, which may be null.
+     * @param director The Director of the movie, which may be null.
+     * @param gross The Box-Office Gross of the movie, which may be null.
+     * @param nominations The number of Oscar Nominations received by the movie, which may be null.
+     * @return Returns the FavoriteMovie that was added to the end of the
+     * collection.
+     * @throws IllegalArgumentException Indicates that there is insufficient
+     * memory for the new movie.
+     * @throws OutOfMemoryError Indicates that there is insufficient memory for
+     * the new movie.
+     */
+    public FavoriteMovie add(Integer imdb, String title, LocalDate releaseDate, String writer, String director, Double gross, Integer nominations) {
+        return add(new FavoriteMovie(imdb, title, releaseDate, writer, director, gross, nominations));
+    }
+
+    /**
+     * Adds the <code>favoriteMovies</code> to the end of this collection.
+     * <p>
+     * <b>Precondition:</b>
+     * <ul>
+     * <li>
+     * favoriteMovies is not null.
+     * </li>
+     * </ul>
+     * <p>
+     * <b>Postcondition:</b>
+     * <ul>
+     * <li>
+     * The <code>favoriteMovies</code> were added to the end of this collection,
+     * the number of movies in this collection has been updated to reflect the
+     * new movies.
+     * </li>
+     * </ul>
+     * <p>
+     * <b>Notes:</b>
+     * <ul>
+     * <li>
+     * If the collection becomes so large that capacity reaches
+     * Integer.MAX_VALUE, there will be an arithmetic overflow and the add will
+     * fail.
+     * </li>
+     * </ul>
+     *
+     * @param favoriteMovies The favoriteMovies to add to the collection, which
+     * cannot be null.
+     * @throws IllegalArgumentException Indicates that there is insufficient
+     * memory for the new movie.
+     * @throws OutOfMemoryError Indicates that there is insufficient memory for
+     * the new movie.
+     */
+    public void addAll(FavoriteMovieCollection favoriteMovies) {
+        if (favoriteMovies == null) {
+            throw new IllegalArgumentException("favoriteMovies cannot be null.");
+        }
+
+        ensureCapacity((numberOfMovies + favoriteMovies.size()) * 2);
+
+        // Add the new movies to the end of the sequence.
+        System.arraycopy(favoriteMovies.movies, 0, movies, numberOfMovies, favoriteMovies.size());
+        numberOfMovies += favoriteMovies.size();
+    }
+
+    /**
+     * Adds the <code>favoriteMovies</code> to the end of this collection.
+     * <p>
+     * <b>Precondition:</b>
+     * <ul>
+     * <li>
+     * favoriteMovies is not null.
+     * </li>
+     * </ul>
+     * <p>
+     * <b>Postcondition:</b>
+     * <ul>
+     * <li>
+     * The <code>favoriteMovies</code> were added to the end of this collection,
+     * the number of movies in this collection has been updated to reflect the
+     * new movies.
+     * </li>
+     * </ul>
+     * <p>
+     * <b>Notes:</b>
+     * <ul>
+     * <li>
+     * If the collection becomes so large that capacity reaches
+     * Integer.MAX_VALUE, there will be an arithmetic overflow and the add will
+     * fail.
+     * </li>
+     * </ul>
+     *
+     * @param favoriteMovies The favoriteMovies to add to the collection, which
+     * cannot be null.
+     * @throws IllegalArgumentException Indicates that there is insufficient
+     * memory for the new movie.
+     * @throws OutOfMemoryError Indicates that there is insufficient memory for
+     * the new movie.
+     */
+    public void addMany(FavoriteMovie... favoriteMovies) {
+        if (favoriteMovies == null) {
+            throw new IllegalArgumentException("favoriteMovies cannot be null.");
+        }
+
+        if (numberOfMovies + favoriteMovies.length > movies.length) {
+            ensureCapacity((numberOfMovies + favoriteMovies.length) * 2);
+        }
+
+        // Add the new movies to the end of the sequence.
+        System.arraycopy(favoriteMovies, 0, movies, numberOfMovies, favoriteMovies.length);
+        numberOfMovies += favoriteMovies.length;
     }
 
     /**
@@ -346,6 +493,57 @@ public class FavoriteMovieCollection implements Serializable, Cloneable, Iterabl
 
         // Deep-copy the array.
         answer.movies = movies.clone();
+
+        return answer;
+    }
+
+    /**
+     * Returns the number of times the target movie title is found in the 
+     * collection. If title is not found in the collection, 0 is returned.
+     * <p>
+     * <b>Precondition:</b>
+     * <ul>
+     * <li>
+     * The collection is not empty.
+     * </li>
+     * </ul>
+     * <p>
+     * <b>Note:</b>
+     * <ul>
+     * <li>
+     * The titles are compared for equality without respect to case.
+     * </li>
+     * <li>
+     * Search time is linear.
+     * </li>
+     * </ul>
+     *
+     * @param target The title to search for, which may be the null reference.
+     * @return The number of times target is found in the collection.
+     * @throws IllegalStateException Indicates that the collection is empty.
+     */
+    public int countOccurences(String target) {
+        int answer = 0;
+
+        if (empty()) {
+            throw new IllegalStateException("Cannot search an empty collection.");
+        }
+
+        if (target == null) {
+            for (int i = 0; i < numberOfMovies; i++) {
+                FavoriteMovie fm = movies[i];
+                if (fm != null && fm.getTitle() == null) {
+                    answer++;
+                }
+            }
+        } else {
+            for (int i = 0; i < numberOfMovies; i++) {
+                FavoriteMovie fm = movies[i];
+                if (fm != null && fm.getTitle() != null && target.toLowerCase().equals(fm.getTitle().toLowerCase())) {
+                    answer++;
+                }
+            }
+        }
 
         return answer;
     }
@@ -534,23 +732,24 @@ public class FavoriteMovieCollection implements Serializable, Cloneable, Iterabl
         return new FavoriteMovieIterator(movies, numberOfMovies);
     }
 
+    /**
+     * AbstractListModel&lt;String&gt; method that returns the number of movies
+     * in the collection.
+     * @return The number of movies in the collection.
+     */
     @Override
     public int getSize() {
         return size();
     }
 
+    /**
+     * AbstractListMode&gt;String&gt; method that returns a string representation
+     * of the movie at the specified index.
+     * @param index The index of the movie to return
+     * @return The string representation of the movie
+     */
     @Override
     public String getElementAt(int index) {
         return getAt(index).toString();
-    }
-
-    @Override
-    public void addListDataListener(ListDataListener l) {
-        
-    }
-
-    @Override
-    public void removeListDataListener(ListDataListener l) {
-        
     }
 }

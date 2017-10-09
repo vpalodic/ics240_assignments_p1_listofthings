@@ -27,26 +27,6 @@ public class FavoriteMovieCollectionForm extends javax.swing.JFrame {
         return movieCollection;
     }
 
-    private transient final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
-
-    /**
-     * Add PropertyChangeListener.
-     *
-     * @param listener
-     */
-    public void addPropertyChangeListener(PropertyChangeListener listener) {
-        propertyChangeSupport.addPropertyChangeListener(listener);
-    }
-
-    /**
-     * Remove PropertyChangeListener.
-     *
-     * @param listener
-     */
-    public void removePropertyChangeListener(PropertyChangeListener listener) {
-        propertyChangeSupport.removePropertyChangeListener(listener);
-    }
-
     /**
      * Creates new form FavoriteMovieCollectionForm
      */

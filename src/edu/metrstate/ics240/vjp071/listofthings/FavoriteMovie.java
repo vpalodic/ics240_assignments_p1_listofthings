@@ -61,6 +61,20 @@ public class FavoriteMovie implements Serializable {
     private Double gross;
     private Integer nominations;
 
+    public FavoriteMovie() {
+        this(null, null, null, null, null, null, null);
+    }
+    
+    public FavoriteMovie(Integer imdb, String title, LocalDate releaseDate, String writer, String director, Double gross, Integer nominations) {
+        this.imdb = imdb;
+        this.title = title;
+        this.releaseDate = releaseDate;
+        this.writer = writer;
+        this.director = director;
+        this.gross = gross;
+        this.nominations = nominations;
+    }
+    
     /**
      * Returns the IMDB number of this movie or null if no IMDB number has been
      * set.
@@ -267,6 +281,6 @@ public class FavoriteMovie implements Serializable {
      */
     @Override
     public String toString() {
-        return "FavoriteMovie{" + "imdb=" + imdb + ", title=" + title + ", releaseDate=" + releaseDate + ", yearsReleased=" + getYearsReleased() + ", writer=" + writer + ", director=" + director + ", gross=" + gross + ", nominations=" + nominations + '}';
+        return "IMDB: " + imdb + " -- Title: " + title + " -- Release Date: " + releaseDate + " -- Years in Release: " + getYearsReleased() + " -- Writer: " + writer + " -- Director: " + director + " -- Box Office Gross: " + gross + " -- Oscar Nominations: " + nominations;
     }
 }
