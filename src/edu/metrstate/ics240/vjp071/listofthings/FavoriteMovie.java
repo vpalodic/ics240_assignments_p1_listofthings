@@ -6,8 +6,10 @@
 package edu.metrstate.ics240.vjp071.listofthings;
 
 import java.io.Serializable;
+import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.Period;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 /**
@@ -281,6 +283,59 @@ public class FavoriteMovie implements Serializable {
      */
     @Override
     public String toString() {
-        return "IMDB: " + imdb + " -- Title: " + title + " -- Release Date: " + releaseDate + " -- Years in Release: " + getYearsReleased() + " -- Writer: " + writer + " -- Director: " + director + " -- Box Office Gross: " + gross + " -- Oscar Nominations: " + nominations;
+        StringBuffer output = new StringBuffer();
+        
+        if (imdb == null) {
+            output.append(String.format("IMDB: %s     ", "No IMDB Number"));
+        } else {
+            output.append(String.format("IMDB: %07d     ", imdb));
+        }
+        
+        output.append(String.format("Title: %s     ", title));
+        
+        if (releaseDate != null) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+            output.append(String.format("Release Date: %s     ", releaseDate.format(formatter)));
+        } else {
+            output.append(String.format("Release Date:                "));
+        }
+        
+        output.append("Years in Release: ");
+        
+        if (releaseDate == null) {
+            output.append(String.format("No Release Date     "));
+        } else if (releaseDate.isAfter(LocalDate.now())) {
+            output.append(String.format("Future Release     "));
+        } else {
+            output.append(String.format("%02d     ", getYearsReleased()));
+        }
+        
+        if (director == null) {
+            output.append(String.format("Director: %s     ", "No Director"));
+        } else {
+            output.append(String.format("Director: %s     ", director));
+        }
+        
+        if (writer == null) {
+            output.append(String.format("Director: %s     ", "No Writer"));
+        } else {
+            output.append(String.format("Writer: %s     ", writer == null ? "" : writer));
+        }
+        
+        if (gross == null) {
+            output.append(String.format("Box Office: %s     ", "No Box Office"));
+        } else {
+            NumberFormat numFormatter = NumberFormat.getCurrencyInstance();
+            output.append(String.format("Box Office: %s     ", numFormatter.format(gross)));
+        }
+
+        if (nominations == null) {
+            output.append(String.format("Oscar Nominations: %s     ", "No Oscar Nominations"));
+        } else {
+            output.append(String.format("Oscar Nominations: % 2d", nominations));
+        }
+        
+        
+        return output.toString();
     }
 }

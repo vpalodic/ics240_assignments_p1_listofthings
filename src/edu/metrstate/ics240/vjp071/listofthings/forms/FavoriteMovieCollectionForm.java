@@ -10,6 +10,9 @@ import edu.metrstate.ics240.vjp071.listofthings.FavoriteMovieCollection;
 import edu.metrstate.ics240.vjp071.listofthings.dialogs.FavoriteMovieDialog;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 /**
  *
@@ -32,16 +35,15 @@ public class FavoriteMovieCollectionForm extends javax.swing.JFrame {
      */
     public FavoriteMovieCollectionForm() {
         movieCollection = new FavoriteMovieCollection();
-        FavoriteMovie fm = new FavoriteMovie();
         
-        fm.setImdb(1234567);
-        fm.setTitle("Example 1");
-        fm.setDirector("Spielberg");
-        fm.setWriter("Nolan");
-        fm.setGross(1_000_000_000_000.0);
-        fm.setNominations(42);
-        movieCollection.add(fm);
         initComponents();
+        
+        clearJButton.setEnabled(false);
+        editJButton.setEnabled(false);
+        deleteJButton.setEnabled(false);
+        searchJButton.setEnabled(false);
+        searchJTextField.setEnabled(false);
+        moviesJList.setSelectedIndex(-1);
     }
 
     /**
@@ -56,14 +58,20 @@ public class FavoriteMovieCollectionForm extends javax.swing.JFrame {
         searchJTextField = new javax.swing.JTextField();
         searchJButton = new javax.swing.JButton();
         addJButton = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
+        editJButton = new javax.swing.JButton();
+        deleteJButton = new javax.swing.JButton();
         searchJLabel = new javax.swing.JLabel();
-        jButton5 = new javax.swing.JButton();
+        clearJButton = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         moviesJList = new javax.swing.JList<>();
+        mainJMenuBar = new javax.swing.JMenuBar();
+        fileJMenu = new javax.swing.JMenu();
+        exitJMenuItem = new javax.swing.JMenuItem();
+        editJMenu = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setName("moviesFrame"); // NOI18N
+        setResizable(false);
 
         searchJTextField.setToolTipText("The movie title to search for");
 
@@ -80,52 +88,85 @@ public class FavoriteMovieCollectionForm extends javax.swing.JFrame {
         addJButton.setActionCommand("add");
         addJButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                AddActionPerformed(evt);
+                addJButtonActionPerformed(evt);
             }
         });
 
-        jButton3.setText("jButton3");
+        editJButton.setText("Edit");
+        editJButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editJButtonActionPerformed(evt);
+            }
+        });
 
-        jButton4.setText("jButton4");
+        deleteJButton.setText("Delete");
+        deleteJButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteJButtonActionPerformed(evt);
+            }
+        });
 
         searchJLabel.setLabelFor(searchJTextField);
         searchJLabel.setText("Movie Title:");
 
-        jButton5.setText("jButton5");
+        clearJButton.setText("Clear");
+        clearJButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                clearJButtonActionPerformed(evt);
+            }
+        });
 
         moviesJList.setModel(movieCollection);
+        moviesJList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane1.setViewportView(moviesJList);
+
+        fileJMenu.setText("File");
+
+        exitJMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F4, java.awt.event.InputEvent.ALT_MASK));
+        exitJMenuItem.setText("Exit");
+        exitJMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exitJMenuItemActionPerformed(evt);
+            }
+        });
+        fileJMenu.add(exitJMenuItem);
+
+        mainJMenuBar.add(fileJMenu);
+
+        editJMenu.setText("Edit");
+        mainJMenuBar.add(editJMenu);
+
+        setJMenuBar(mainJMenuBar);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(114, 114, 114)
-                .addComponent(addJButton)
-                .addGap(18, 18, 18)
-                .addComponent(jButton3)
-                .addGap(18, 18, 18)
-                .addComponent(jButton4)
-                .addGap(18, 18, 18)
-                .addComponent(jButton5)
-                .addGap(0, 130, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 548, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(searchJLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(searchJTextField)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(searchJTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 392, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
                         .addComponent(searchJButton))
-                    .addComponent(jScrollPane1))
-                .addContainerGap())
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(111, 111, 111)
+                        .addComponent(addJButton)
+                        .addGap(18, 18, 18)
+                        .addComponent(editJButton)
+                        .addGap(18, 18, 18)
+                        .addComponent(deleteJButton)
+                        .addGap(18, 18, 18)
+                        .addComponent(clearJButton)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(31, 31, 31)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(searchJTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(searchJButton)
@@ -133,28 +174,106 @@ public class FavoriteMovieCollectionForm extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(addJButton)
-                    .addComponent(jButton3)
-                    .addComponent(jButton4)
-                    .addComponent(jButton5))
+                    .addComponent(editJButton)
+                    .addComponent(deleteJButton)
+                    .addComponent(clearJButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(17, Short.MAX_VALUE))
+                .addContainerGap(50, Short.MAX_VALUE))
         );
 
-        pack();
+        setSize(new java.awt.Dimension(584, 319));
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void searchJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchJButtonActionPerformed
         // TODO add your handling code here:
+        if (searchJTextField.getDocument() != null) {
+            String search = searchJTextField.getText();
+            
+            if (!movieCollection.isEmpty()) {
+                int index = movieCollection.search(search);
+                
+                if (index >= 0) {
+                    moviesJList.setSelectedIndex(index);
+                    editJButton.setEnabled(true);
+                    deleteJButton.setEnabled(true);
+                }
+            }
+        }
     }//GEN-LAST:event_searchJButtonActionPerformed
 
-    private void AddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddActionPerformed
+    private void addJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addJButtonActionPerformed
         if (evt.getActionCommand().toLowerCase().equals("add")) {
             FavoriteMovieDialog fmd = new FavoriteMovieDialog(this, true);
 
             fmd.setVisible(true);
+            
+            FavoriteMovie fm = fmd.getFavoriteMovie();
+            
+            if (fm != null) {
+                if (movieCollection.isEmpty()) {
+                    clearJButton.setEnabled(true);
+                    searchJButton.setEnabled(true);
+                    searchJTextField.setEnabled(true);
+                }
+                
+                movieCollection.add(fm);
+            }
         }
-    }//GEN-LAST:event_AddActionPerformed
+    }//GEN-LAST:event_addJButtonActionPerformed
+
+    private void editJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editJButtonActionPerformed
+        if (evt.getActionCommand().toLowerCase().equals("edit")) {
+            int index = moviesJList.getSelectedIndex();
+
+            if (index >= 0) {
+                FavoriteMovie fm = movieCollection.getAt(index);
+
+                FavoriteMovieDialog fmd = new FavoriteMovieDialog(this, true, fm);
+
+                fmd.setVisible(true);
+
+                movieCollection.fireUpdateAt(index);
+            }
+        }
+    }//GEN-LAST:event_editJButtonActionPerformed
+
+    private void deleteJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteJButtonActionPerformed
+        // TODO add your handling code here:
+        int index = moviesJList.getSelectedIndex();
+        
+        if (index >= 0) {
+            movieCollection.remove(index);
+        }
+        
+        editJButton.setEnabled(false);
+        deleteJButton.setEnabled(false);
+        
+        if (movieCollection.isEmpty()) {
+            clearJButton.setEnabled(false);
+            searchJButton.setEnabled(false);
+            searchJTextField.setEnabled(false);
+        }
+        
+        moviesJList.setSelectedIndex(-1);
+    }//GEN-LAST:event_deleteJButtonActionPerformed
+
+    private void clearJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearJButtonActionPerformed
+        if (!movieCollection.isEmpty()) {
+            movieCollection.removeAll();
+            clearJButton.setEnabled(false);
+            editJButton.setEnabled(false);
+            deleteJButton.setEnabled(false);
+            searchJButton.setEnabled(false);
+            searchJTextField.setEnabled(false);
+            moviesJList.setSelectedIndex(-1);
+        }
+    }//GEN-LAST:event_clearJButtonActionPerformed
+
+    private void exitJMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitJMenuItemActionPerformed
+        dispose();
+    }//GEN-LAST:event_exitJMenuItemActionPerformed
 
     /**
      * @param args the command line arguments
@@ -193,10 +312,14 @@ public class FavoriteMovieCollectionForm extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addJButton;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
+    private javax.swing.JButton clearJButton;
+    private javax.swing.JButton deleteJButton;
+    private javax.swing.JButton editJButton;
+    private javax.swing.JMenu editJMenu;
+    private javax.swing.JMenuItem exitJMenuItem;
+    private javax.swing.JMenu fileJMenu;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JMenuBar mainJMenuBar;
     private javax.swing.JList<String> moviesJList;
     private javax.swing.JButton searchJButton;
     private javax.swing.JLabel searchJLabel;

@@ -12,7 +12,7 @@ import javax.swing.AbstractListModel;
 /**
  * The FavoriteMovieCollection class represents a collection of FavoriteMovie
  * object references. The usual add and remove operations are provided, as well
- * as a method to test for whether the collection is empty, a method to search
+ * as a method to test for whether the collection is isEmpty, a method to search
  * the collection for a movie by title to find the movie's location in the
  * collection and a get method to access a specific movie by index. A read-only
  * iterator is provided so that the enhanced for loop can be used to iterate
@@ -22,11 +22,12 @@ import javax.swing.AbstractListModel;
  * <b>Limitations:</b>
  * <ul>
  * <li>
- * The collection can be of any length and is limited only by the amount of free memory.
+ * The collection can be of any length and is limited only by the amount of free
+ * memory.
  * </li>
  * <li>
- * Collections larger than Int.MAX_VALUE will get an incorrect return value from size
- * because of arithmetic overflow.
+ * Collections larger than Int.MAX_VALUE will get an incorrect return value from
+ * size because of arithmetic overflow.
  * </li>
  * <li>
  * The add and clone methods will result in an OutOfMemoryError exception when
@@ -37,7 +38,7 @@ import javax.swing.AbstractListModel;
  * @author Vincent J Palodichuk
  * <A HREF="mailto:hu0011wy@metrostate.edu"> (e-mail me) </A>
  */
-public class FavoriteMovieCollection  extends AbstractListModel<String> implements Cloneable, Iterable<FavoriteMovie> {
+public class FavoriteMovieCollection extends AbstractListModel<String> implements Cloneable, Iterable<FavoriteMovie> {
 
     private static int DEFAULT_INITIAL_CAPACITY = 16;
     private FavoriteMovie[] movies;
@@ -62,7 +63,7 @@ public class FavoriteMovieCollection  extends AbstractListModel<String> implemen
      * <b>Postcondition:</b>
      * <ul>
      * <li>
-     * This collection is empty and has an initial capacity of 16.
+     * This collection is isEmpty and has an initial capacity of 16.
      * </li>
      * </ul>
      *
@@ -91,7 +92,7 @@ public class FavoriteMovieCollection  extends AbstractListModel<String> implemen
      * <b>Postcondition:</b>
      * <ul>
      * <li>
-     * This collection is empty and has an initial capacity of 16.
+     * This collection is isEmpty and has an initial capacity of 16.
      * </li>
      * </ul>
      *
@@ -167,6 +168,7 @@ public class FavoriteMovieCollection  extends AbstractListModel<String> implemen
 
         // Add the new movie to the end of the sequence.
         movies[numberOfMovies++] = favoriteMovie;
+        fireContentsChanged(this, numberOfMovies - 1, numberOfMovies);
 
         return favoriteMovie;
     }
@@ -211,7 +213,8 @@ public class FavoriteMovieCollection  extends AbstractListModel<String> implemen
      * @param writer The Writer of the movie, which may be null.
      * @param director The Director of the movie, which may be null.
      * @param gross The Box-Office Gross of the movie, which may be null.
-     * @param nominations The number of Oscar Nominations received by the movie, which may be null.
+     * @param nominations The number of Oscar Nominations received by the movie,
+     * which may be null.
      * @return Returns the FavoriteMovie that was added to the end of the
      * collection.
      * @throws IllegalArgumentException Indicates that there is insufficient
@@ -268,6 +271,7 @@ public class FavoriteMovieCollection  extends AbstractListModel<String> implemen
         // Add the new movies to the end of the sequence.
         System.arraycopy(favoriteMovies.movies, 0, movies, numberOfMovies, favoriteMovies.size());
         numberOfMovies += favoriteMovies.size();
+        fireIntervalAdded(this, numberOfMovies - favoriteMovies.size(), numberOfMovies);
     }
 
     /**
@@ -317,6 +321,7 @@ public class FavoriteMovieCollection  extends AbstractListModel<String> implemen
         // Add the new movies to the end of the sequence.
         System.arraycopy(favoriteMovies, 0, movies, numberOfMovies, favoriteMovies.length);
         numberOfMovies += favoriteMovies.length;
+        fireIntervalAdded(this, numberOfMovies - favoriteMovies.length, numberOfMovies);
     }
 
     /**
@@ -325,7 +330,7 @@ public class FavoriteMovieCollection  extends AbstractListModel<String> implemen
      * <b>Precondition:</b>
      * <ul>
      * <li>
-     * The collection is not empty.
+     * The collection is not isEmpty.
      * </li>
      * <li>
      * favoriteMovie is not null.
@@ -354,10 +359,10 @@ public class FavoriteMovieCollection  extends AbstractListModel<String> implemen
      * @return Returns the FavoriteMovie that was removed from the collection or
      * null.
      * @throws IllegalArgumentException Indicates that favoriteMovie is null.
-     * @throws IllegalStateException Indicates that the collection is empty.
+     * @throws IllegalStateException Indicates that the collection is isEmpty.
      */
     public FavoriteMovie remove(FavoriteMovie favoriteMovie) {
-        if (empty()) {
+        if (isEmpty()) {
             throw new IllegalStateException("Cannot delete from an empty collection.");
         }
 
@@ -374,6 +379,7 @@ public class FavoriteMovieCollection  extends AbstractListModel<String> implemen
                 answer = movie;
                 movies[i] = movies[numberOfMovies-- - 1];
                 movies[numberOfMovies] = null;
+                fireContentsChanged(this, i, numberOfMovies);
                 break;
             }
         }
@@ -387,7 +393,7 @@ public class FavoriteMovieCollection  extends AbstractListModel<String> implemen
      * <b>Precondition:</b>
      * <ul>
      * <li>
-     * The collection is not empty.
+     * The collection is not isEmpty.
      * </li>
      * <li>
      * index is &gt;= 0 and &lt; size().
@@ -416,10 +422,10 @@ public class FavoriteMovieCollection  extends AbstractListModel<String> implemen
      * null.
      * @throws IllegalArgumentException Indicates that index is not &gt;= 0 and
      * &lt; size().
-     * @throws IllegalStateException Indicates that the collection is empty.
+     * @throws IllegalStateException Indicates that the collection is isEmpty.
      */
     public FavoriteMovie remove(int index) {
-        if (empty()) {
+        if (isEmpty()) {
             throw new IllegalStateException("Cannot delete from an empty collection.");
         }
 
@@ -430,6 +436,7 @@ public class FavoriteMovieCollection  extends AbstractListModel<String> implemen
         FavoriteMovie answer = movies[index];
         movies[index] = movies[numberOfMovies-- - 1];
         movies[numberOfMovies] = null;
+        fireContentsChanged(this, index, numberOfMovies);
 
         return answer;
     }
@@ -440,22 +447,33 @@ public class FavoriteMovieCollection  extends AbstractListModel<String> implemen
      * <b>Postcondition:</b>
      * <ul>
      * <li>
-     * This collection is empty after the method returns.
+     * This collection is isEmpty after the method returns.
      * </li>
      * </ul>
      * Removes all elements from the collection.
      */
-    public void clear() {
+    public void removeAll() {
         int count = numberOfMovies;
 
         if (count == 0) {
             return;
         }
 
+        int end = numberOfMovies;
+        int start = numberOfMovies - 1;
+        
         for (int i = 0; i < count; i++) {
             movies[i] = null;
+            end--;
             numberOfMovies--;
+            
+            if (end % 10 == 0) {
+                fireIntervalRemoved(this, end, start);
+                start = end;
+            }
         }
+        
+        fireIntervalRemoved(this, 0, start);
     }
 
     /**
@@ -498,13 +516,13 @@ public class FavoriteMovieCollection  extends AbstractListModel<String> implemen
     }
 
     /**
-     * Returns the number of times the target movie title is found in the 
+     * Returns the number of times the target movie title is found in the
      * collection. If title is not found in the collection, 0 is returned.
      * <p>
      * <b>Precondition:</b>
      * <ul>
      * <li>
-     * The collection is not empty.
+     * The collection is not isEmpty.
      * </li>
      * </ul>
      * <p>
@@ -520,12 +538,12 @@ public class FavoriteMovieCollection  extends AbstractListModel<String> implemen
      *
      * @param target The title to search for, which may be the null reference.
      * @return The number of times target is found in the collection.
-     * @throws IllegalStateException Indicates that the collection is empty.
+     * @throws IllegalStateException Indicates that the collection is isEmpty.
      */
     public int countOccurences(String target) {
         int answer = 0;
 
-        if (empty()) {
+        if (isEmpty()) {
             throw new IllegalStateException("Cannot search an empty collection.");
         }
 
@@ -549,19 +567,13 @@ public class FavoriteMovieCollection  extends AbstractListModel<String> implemen
     }
 
     /**
-     * Returns true if the collection is empty; otherwise, false is returned.
+     * Returns true if the collection is isEmpty; otherwise, false is returned.
      *
-     * @return Returns true if the collection is empty; otherwise, false is
+     * @return Returns true if the collection is isEmpty; otherwise, false is
      * returned.
      */
-    public boolean empty() {
-        boolean answer = false;
-
-        if (numberOfMovies == 0) {
-            answer = true;
-        }
-
-        return answer;
+    public boolean isEmpty() {
+        return numberOfMovies == 0;
     }
 
     /**
@@ -641,7 +653,7 @@ public class FavoriteMovieCollection  extends AbstractListModel<String> implemen
      * size()
      */
     public FavoriteMovie getAt(int index) {
-        if (empty()) {
+        if (isEmpty()) {
             throw new IllegalStateException("The collection is empty.");
         }
 
@@ -659,7 +671,7 @@ public class FavoriteMovieCollection  extends AbstractListModel<String> implemen
      * <b>Precondition:</b>
      * <ul>
      * <li>
-     * The collection is not empty.
+     * The collection is not isEmpty.
      * </li>
      * </ul>
      * <p>
@@ -681,12 +693,12 @@ public class FavoriteMovieCollection  extends AbstractListModel<String> implemen
      * @return the index for the first FavoriteMovie that matches the specified
      * <code>title</code> in the collection. If there is no such title, then -1
      * is returned.
-     * @throws IllegalStateException Indicates that the collection is empty.
+     * @throws IllegalStateException Indicates that the collection is isEmpty.
      */
     public int search(String title) {
         int answer = -1;
 
-        if (empty()) {
+        if (isEmpty()) {
             throw new IllegalStateException("Cannot search an empty collection.");
         }
 
@@ -735,6 +747,7 @@ public class FavoriteMovieCollection  extends AbstractListModel<String> implemen
     /**
      * AbstractListModel&lt;String&gt; method that returns the number of movies
      * in the collection.
+     *
      * @return The number of movies in the collection.
      */
     @Override
@@ -743,13 +756,22 @@ public class FavoriteMovieCollection  extends AbstractListModel<String> implemen
     }
 
     /**
-     * AbstractListMode&gt;String&gt; method that returns a string representation
-     * of the movie at the specified index.
+     * AbstractListMode&gt;String&gt; method that returns a string
+     * representation of the movie at the specified index.
+     *
      * @param index The index of the movie to return
      * @return The string representation of the movie
      */
     @Override
     public String getElementAt(int index) {
         return getAt(index).toString();
+    }
+
+    /**
+     * Notifies listeners that the date at this index changed.
+     * @param index the value of index
+     */
+    public void fireUpdateAt(int index) {
+        fireContentsChanged(this, index, index);
     }
 }
