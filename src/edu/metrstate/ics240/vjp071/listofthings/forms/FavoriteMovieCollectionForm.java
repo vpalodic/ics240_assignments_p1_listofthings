@@ -13,6 +13,7 @@ import java.beans.PropertyChangeSupport;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
@@ -43,12 +44,13 @@ public class FavoriteMovieCollectionForm extends javax.swing.JFrame {
 
         initComponents();
 
+        saveJMenuItem.setEnabled(false);
+        saveAsJMenuItem.setEnabled(false);
         clearJButton.setEnabled(false);
         editJButton.setEnabled(false);
         deleteJButton.setEnabled(false);
         searchJButton.setEnabled(false);
         searchJTextField.setEnabled(false);
-        moviesJList.setSelectedIndex(-1);
 
         moviesJList.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
@@ -154,6 +156,11 @@ public class FavoriteMovieCollectionForm extends javax.swing.JFrame {
 
         openJMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
         openJMenuItem.setText("Open...");
+        openJMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                openJMenuItemActionPerformed(evt);
+            }
+        });
         fileJMenu.add(openJMenuItem);
 
         saveJMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
@@ -238,6 +245,8 @@ public class FavoriteMovieCollectionForm extends javax.swing.JFrame {
                     moviesJList.setSelectedIndex(index);
                     editJButton.setEnabled(true);
                     deleteJButton.setEnabled(true);
+                } else {
+                    moviesJList.getSelectionModel().clearSelection();
                 }
             }
         }
@@ -257,8 +266,10 @@ public class FavoriteMovieCollectionForm extends javax.swing.JFrame {
                     searchJButton.setEnabled(true);
                     searchJTextField.setEnabled(true);
                 }
-
+                
                 movieCollection.add(fm);
+                saveJMenuItem.setEnabled(true);
+                saveAsJMenuItem.setEnabled(true);
             }
         }
     }//GEN-LAST:event_addJButtonActionPerformed
@@ -275,6 +286,8 @@ public class FavoriteMovieCollectionForm extends javax.swing.JFrame {
                 fmd.setVisible(true);
 
                 movieCollection.fireUpdateAt(index);
+                saveJMenuItem.setEnabled(true);
+                saveAsJMenuItem.setEnabled(true);
             }
         }
     }//GEN-LAST:event_editJButtonActionPerformed
@@ -290,7 +303,9 @@ public class FavoriteMovieCollectionForm extends javax.swing.JFrame {
 
             if (reply == JOptionPane.YES_OPTION) {
                 movieCollection.remove(index);
-                moviesJList.setSelectedIndex(-1);
+                moviesJList.getSelectionModel().clearSelection();
+                saveJMenuItem.setEnabled(true);
+                saveAsJMenuItem.setEnabled(true);
             }
         }
 
@@ -303,20 +318,33 @@ public class FavoriteMovieCollectionForm extends javax.swing.JFrame {
     }//GEN-LAST:event_deleteJButtonActionPerformed
 
     private void clearJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearJButtonActionPerformed
-        if (!movieCollection.isEmpty()) {
-            movieCollection.removeAll();
-            clearJButton.setEnabled(false);
-            editJButton.setEnabled(false);
-            deleteJButton.setEnabled(false);
-            searchJButton.setEnabled(false);
-            searchJTextField.setEnabled(false);
-            moviesJList.setSelectedIndex(-1);
+        String title = String.format("Clear Movie Collection Confirmation");
+        String message = String.format("Are you sure you want to delete all movies?");
+        int reply = JOptionPane.showConfirmDialog(null, message, title, JOptionPane.YES_NO_OPTION);
+
+        if (reply == JOptionPane.YES_OPTION) {
+            if (!movieCollection.isEmpty()) {
+                movieCollection.removeAll();
+                clearJButton.setEnabled(false);
+                editJButton.setEnabled(false);
+                deleteJButton.setEnabled(false);
+                searchJButton.setEnabled(false);
+                searchJTextField.setEnabled(false);
+                saveJMenuItem.setEnabled(true);
+                saveAsJMenuItem.setEnabled(true);
+            }
         }
     }//GEN-LAST:event_clearJButtonActionPerformed
 
     private void exitJMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitJMenuItemActionPerformed
         dispose();
     }//GEN-LAST:event_exitJMenuItemActionPerformed
+
+    private void openJMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openJMenuItemActionPerformed
+        // TODO add your handling code here:
+        JFileChooser openFile = new JFileChooser();
+        openFile.showOpenDialog(null);
+    }//GEN-LAST:event_openJMenuItemActionPerformed
 
     /**
      * @param args the command line arguments
