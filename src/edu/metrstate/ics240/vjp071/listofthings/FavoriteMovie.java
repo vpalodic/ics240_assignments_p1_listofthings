@@ -315,7 +315,98 @@ public class FavoriteMovie implements Serializable {
 
         return answer;
     }
+    
+    public static String getTabDelimitedHeader() {
+        StringBuilder output = new StringBuilder();
+        String delim = "\t";
+        
+        output.append("IMDB#");
+        output.append(delim);
+        output.append("TITLE");
+        output.append(delim);
+        output.append("RELEASE_DATE");
+        output.append(delim);
+        output.append("DIRECTOR");
+        output.append(delim);
+        output.append("WRITER");
+        output.append(delim);
+        output.append("BOX-OFFICE");
+        output.append(delim);
+        output.append("OSCAR_NOMINATIONS");
+        
+        return output.toString();
+    }
 
+    /**
+     * Returns a tab delimited string representation of this FavoriteMovie.
+     * <p>The order of the fields in the string are:
+     * <ul>
+     *  <li>
+     *      IMDB# - 7 digits max
+     *  </li>
+     *  <li>
+     *      TITLE
+     *  </li>
+     *  <li>
+     *      RELEASE_DATE - yyyy-MM-dd format
+     *  </li>
+     *  <li>
+     *      DIRECTOR
+     *  </li>
+     *  <li>
+     *      WRITER
+     *  </li>
+     *  <li>
+     *      BOX-OFFICE
+     *  </li>
+     *  <li>
+     *      OSCAR_NOMINATIONS
+     *  </li>
+     * </ul>
+     * <p>
+     * <b>Notes:</b>
+     * <ul>
+     *  <li>
+     *      getTabDelimitedHeader() can be used to generate a tab delimited
+     *      header that matches the order listed above. 
+     *  </li>
+     * </ul>
+     * @return A tab delimited string representation of this FavoriteMovie.
+     */
+    public String toTabDelimited() {
+        StringBuilder output = new StringBuilder();
+        String delim = "\t";
+        
+        if (imdb == null) {
+            output.append("");
+        } else {
+            output.append(String.format("%07d", imdb));
+        }
+        
+        output.append(delim);
+        output.append(String.format("%s", title == null ? "" : title));
+        output.append(delim);
+        output.append(String.format("%s", releaseDate == null ? "" : releaseDate.toString()));
+        output.append(delim);
+        output.append(String.format("%s", director == null ? "" : director));
+        output.append(delim);
+        output.append(String.format("%s", writer == null ? "" : writer));
+        output.append(delim);
+        if (gross == null) {
+            output.append("");
+        } else {
+            output.append(String.format("%.2f", gross));
+        }
+        output.append(delim);
+        if (nominations == null) {
+            output.append("");
+        } else {
+            output.append(String.format("%02d", nominations));
+        }
+        
+        return output.toString();
+    }
+    
     /**
      * Returns a String representation of this favorite movie.
      *
@@ -323,7 +414,7 @@ public class FavoriteMovie implements Serializable {
      */
     @Override
     public String toString() {
-        StringBuffer output = new StringBuffer();
+        StringBuilder output = new StringBuilder();
         
         if (imdb == null) {
             output.append(String.format("IMDB: %s     ", "No IMDB Number"));
@@ -357,7 +448,7 @@ public class FavoriteMovie implements Serializable {
         }
         
         if (writer == null) {
-            output.append(String.format("Director: %s     ", "No Writer"));
+            output.append(String.format("Writer: %s     ", "No Writer"));
         } else {
             output.append(String.format("Writer: %s     ", writer == null ? "" : writer));
         }
@@ -375,10 +466,16 @@ public class FavoriteMovie implements Serializable {
             output.append(String.format("Oscar Nominations: % 2d", nominations));
         }
         
-        
         return output.toString();
     }
     
+    /**
+     * Returns a new FavoriteMovie initialized from the passed in tab delimited string.
+     * @param movie The tab delimited string that contains the values for the movie.
+     * @return A new FavoriteMovie initialized from the passed in movie string.
+     * @throws IllegalArgumentException indicates that movie is null or that
+     * movie is poorly formatted. See toTabDelimited for the expected format.
+     */
     public static FavoriteMovie fromString(String movie) {
         String delim = "\\t";
         FavoriteMovie answer = null;

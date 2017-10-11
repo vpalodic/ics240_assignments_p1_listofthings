@@ -45,8 +45,6 @@ public class FavoriteMovieCollectionForm extends javax.swing.JFrame {
 
         initComponents();
 
-        saveJMenuItem.setEnabled(false);
-        saveAsJMenuItem.setEnabled(false);
         clearJButton.setEnabled(false);
         editJButton.setEnabled(false);
         deleteJButton.setEnabled(false);
@@ -98,7 +96,6 @@ public class FavoriteMovieCollectionForm extends javax.swing.JFrame {
         fileJMenu = new javax.swing.JMenu();
         openJMenuItem = new javax.swing.JMenuItem();
         saveJMenuItem = new javax.swing.JMenuItem();
-        saveAsJMenuItem = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
         exitJMenuItem = new javax.swing.JMenuItem();
 
@@ -166,12 +163,14 @@ public class FavoriteMovieCollectionForm extends javax.swing.JFrame {
         fileJMenu.add(openJMenuItem);
 
         saveJMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
-        saveJMenuItem.setText("Save");
+        saveJMenuItem.setText("Save...");
+        saveJMenuItem.setActionCommand("Save...");
+        saveJMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveJMenuItemActionPerformed(evt);
+            }
+        });
         fileJMenu.add(saveJMenuItem);
-
-        saveAsJMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
-        saveAsJMenuItem.setText("Save as...");
-        fileJMenu.add(saveAsJMenuItem);
         fileJMenu.add(jSeparator1);
 
         exitJMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F4, java.awt.event.InputEvent.ALT_MASK));
@@ -270,8 +269,6 @@ public class FavoriteMovieCollectionForm extends javax.swing.JFrame {
                 }
                 
                 movieCollection.add(fm);
-                saveJMenuItem.setEnabled(true);
-                saveAsJMenuItem.setEnabled(true);
             }
         }
     }//GEN-LAST:event_addJButtonActionPerformed
@@ -288,8 +285,6 @@ public class FavoriteMovieCollectionForm extends javax.swing.JFrame {
                 fmd.setVisible(true);
 
                 movieCollection.fireUpdateAt(index);
-                saveJMenuItem.setEnabled(true);
-                saveAsJMenuItem.setEnabled(true);
             }
         }
     }//GEN-LAST:event_editJButtonActionPerformed
@@ -306,8 +301,6 @@ public class FavoriteMovieCollectionForm extends javax.swing.JFrame {
             if (reply == JOptionPane.YES_OPTION) {
                 movieCollection.remove(index);
                 moviesJList.getSelectionModel().clearSelection();
-                saveJMenuItem.setEnabled(true);
-                saveAsJMenuItem.setEnabled(true);
             }
         }
 
@@ -332,8 +325,6 @@ public class FavoriteMovieCollectionForm extends javax.swing.JFrame {
                 deleteJButton.setEnabled(false);
                 searchJButton.setEnabled(false);
                 searchJTextField.setEnabled(false);
-                saveJMenuItem.setEnabled(true);
-                saveAsJMenuItem.setEnabled(true);
             }
         }
     }//GEN-LAST:event_clearJButtonActionPerformed
@@ -349,9 +340,20 @@ public class FavoriteMovieCollectionForm extends javax.swing.JFrame {
         File file = openFile.getSelectedFile();
         
         if (file != null) {
-            movieCollection.load(file);
+            movieCollection.addFromFile(file);
         }
     }//GEN-LAST:event_openJMenuItemActionPerformed
+
+    private void saveJMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveJMenuItemActionPerformed
+        // TODO add your handling code here:
+        JFileChooser openFile = new JFileChooser();
+        openFile.showSaveDialog(null);
+        File file = openFile.getSelectedFile();
+        
+        if (file != null) {
+            movieCollection.saveToFile(file);
+        }
+    }//GEN-LAST:event_saveJMenuItemActionPerformed
 
     /**
      * @param args the command line arguments
@@ -400,7 +402,6 @@ public class FavoriteMovieCollectionForm extends javax.swing.JFrame {
     private javax.swing.JMenuBar mainJMenuBar;
     private javax.swing.JList<String> moviesJList;
     private javax.swing.JMenuItem openJMenuItem;
-    private javax.swing.JMenuItem saveAsJMenuItem;
     private javax.swing.JMenuItem saveJMenuItem;
     private javax.swing.JButton searchJButton;
     private javax.swing.JLabel searchJLabel;

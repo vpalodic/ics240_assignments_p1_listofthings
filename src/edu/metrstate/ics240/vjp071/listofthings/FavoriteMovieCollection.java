@@ -6,10 +6,13 @@
 package edu.metrstate.ics240.vjp071.listofthings;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.time.LocalDate;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -782,9 +785,17 @@ public class FavoriteMovieCollection extends AbstractListModel<String> implement
         fireContentsChanged(this, index, index);
     }
 
-    public void load(File file) {
-        if (file == null || !file.isFile()) {
-            throw new IllegalArgumentException("file is null or is not a file.");
+    /**
+     * Opens and reads the contents of the specified file object. If an error occurs
+     * while processing the file, movies added to the collection prior to the error
+     * will still be in the collection. See FavoriteMovie.toTabDelimited() for the file format.
+     * @param file The file that contains the tab delimited movies to read in to the collection.
+     * @throws IllegalArgumentException Indicates that file is null, not a file, does not exist,
+     * or the file contains data not in the format specified in FavoriteMovie.toTabDelimited()
+     */
+    public void addFromFile(File file) {
+        if (file == null || !file.isFile() || !file.exists()) {
+            throw new IllegalArgumentException("file is null or is not a file or does not exist.");
         }
         
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)))) {
@@ -793,6 +804,32 @@ public class FavoriteMovieCollection extends AbstractListModel<String> implement
                 
                 if (movie != null && !movie.trim().isEmpty()) {
                     this.add(FavoriteMovie.fromString(movie));
+                }
+            }
+        } catch (IOException ex) {
+            
+        }
+    }
+    
+   /**
+     * Opens and writes the contents of the collection to specified file object. If an error occurs
+     * while processing the collection, movies written to the file prior to the error
+     * will still be in the file. See FavoriteMovie.toTabDelimited() for the file format.
+     * Existing files are overwritten.
+     * @param file The file to write the collection out to in tab delimited format.
+     * @throws IllegalArgumentException Indicates that file is null,
+     * or the file contains data not in the format specified in FavoriteMovie.toTabDelimited()
+     */
+    public void saveToFile(File file) {
+        if (file == null) {
+            throw new IllegalArgumentException("file is null.");
+        }
+        
+        try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file)))) {
+            for (FavoriteMovie fm : movies) {
+                if (fm != null) {
+                    writer.write(fm.toTabDelimited());
+                    writer.newLine();
                 }
             }
         } catch (IOException ex) {
