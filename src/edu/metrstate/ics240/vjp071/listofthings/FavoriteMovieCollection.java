@@ -854,7 +854,7 @@ public class FavoriteMovieCollection extends AbstractListModel<String> implement
     /**
      * Add PropertyChangeListener.
      *
-     * @param listener
+     * @param listener The listener to be added
      */
     public void addPropertyChangeListener(PropertyChangeListener listener )
     {
@@ -864,7 +864,7 @@ public class FavoriteMovieCollection extends AbstractListModel<String> implement
     /**
      * Remove PropertyChangeListener.
      *
-     * @param listener
+     * @param listener The listener to be removed
      */
     public void removePropertyChangeListener(PropertyChangeListener listener )
     {

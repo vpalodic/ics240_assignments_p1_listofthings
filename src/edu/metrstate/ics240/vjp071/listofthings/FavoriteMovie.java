@@ -339,6 +339,36 @@ public class FavoriteMovie implements Serializable {
         return answer;
     }
     
+    /**
+     * Returns a the name of the modifiable properties as a tab
+     * delimited string representation.
+     * 
+     * <p>The order of the fields in the string are:
+     * <ul>
+     *  <li>
+     *      IMDB#
+     *  </li>
+     *  <li>
+     *      TITLE
+     *  </li>
+     *  <li>
+     *      RELEASE_DATE
+     *  </li>
+     *  <li>
+     *      DIRECTOR
+     *  </li>
+     *  <li>
+     *      WRITER
+     *  </li>
+     *  <li>
+     *      BOX-OFFICE
+     *  </li>
+     *  <li>
+     *      OSCAR_NOMINATIONS
+     *  </li>
+     * </ul>
+     * @return A tab delimited header for.
+     */
     public static String getTabDelimitedHeader() {
         StringBuilder output = new StringBuilder();
         String delim = "\t";
@@ -392,6 +422,9 @@ public class FavoriteMovie implements Serializable {
      *  <li>
      *      getTabDelimitedHeader() can be used to generate a tab delimited
      *      header that matches the order listed above. 
+     *  </li>
+     *  <li>
+     *      empty values are output as a space. 
      *  </li>
      * </ul>
      * @return A tab delimited string representation of this FavoriteMovie.
@@ -494,6 +527,8 @@ public class FavoriteMovie implements Serializable {
     
     /**
      * Returns a new FavoriteMovie initialized from the passed in tab delimited string.
+     * Empty values in the movie string should be represented as a space or else
+     * an IllegalArgumentException may be thrown.
      * @param movie The tab delimited string that contains the values for the movie.
      * @return A new FavoriteMovie initialized from the passed in movie string.
      * @throws IllegalArgumentException indicates that movie is null or that
@@ -510,7 +545,7 @@ public class FavoriteMovie implements Serializable {
         String[] props = movie.split(delim);
         
         if (props.length != 7) {
-            throw new IllegalArgumentException("movie appears to be corrupt.");
+            throw new IllegalArgumentException(String.format("movie appears to be corrupt: %s", movie));
         }
         
         answer = new FavoriteMovie(props);
@@ -521,7 +556,7 @@ public class FavoriteMovie implements Serializable {
     /**
      * Add PropertyChangeListener.
      *
-     * @param listener
+     * @param listener The listener to be added
      */
     public void addPropertyChangeListener(PropertyChangeListener listener )
     {
@@ -531,7 +566,7 @@ public class FavoriteMovie implements Serializable {
     /**
      * Remove PropertyChangeListener.
      *
-     * @param listener
+     * @param listener The listener to be removed
      */
     public void removePropertyChangeListener(PropertyChangeListener listener )
     {

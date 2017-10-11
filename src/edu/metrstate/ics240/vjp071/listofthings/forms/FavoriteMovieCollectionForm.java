@@ -19,7 +19,9 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 /**
- *
+ * The main movie collection form where users can load and save collections and
+ * add, edit, and deleting movies from the collection.
+ * 
  * @author Vincent
  */
 public class FavoriteMovieCollectionForm extends JFrame {
