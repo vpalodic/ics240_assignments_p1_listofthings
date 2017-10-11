@@ -10,6 +10,7 @@ import edu.metrstate.ics240.vjp071.listofthings.FavoriteMovieCollection;
 import edu.metrstate.ics240.vjp071.listofthings.dialogs.FavoriteMovieDialog;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.io.File;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -102,6 +103,7 @@ public class FavoriteMovieCollectionForm extends javax.swing.JFrame {
         exitJMenuItem = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Movie Collection Manager");
         setName("moviesFrame"); // NOI18N
         setResizable(false);
 
@@ -344,6 +346,11 @@ public class FavoriteMovieCollectionForm extends javax.swing.JFrame {
         // TODO add your handling code here:
         JFileChooser openFile = new JFileChooser();
         openFile.showOpenDialog(null);
+        File file = openFile.getSelectedFile();
+        
+        if (file != null) {
+            movieCollection.load(file);
+        }
     }//GEN-LAST:event_openJMenuItemActionPerformed
 
     /**

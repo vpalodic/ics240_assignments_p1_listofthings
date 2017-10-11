@@ -10,6 +10,7 @@ import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Objects;
 
 /**
@@ -75,6 +76,45 @@ public class FavoriteMovie implements Serializable {
         this.director = director;
         this.gross = gross;
         this.nominations = nominations;
+    }
+
+    private FavoriteMovie(String[] props) {
+        if (props == null || props.length != 7) {
+            throw new IllegalArgumentException("props is null or does not contain 7 properties.");
+        }
+        
+        try {
+            Integer imdb1 = Integer.parseInt(props[0]);
+            this.imdb = imdb1;
+        } catch (NullPointerException | NumberFormatException ex) {
+            
+        }
+        
+        this.title = props[1];
+        
+        try {
+            LocalDate releaseDate1 = LocalDate.parse(props[2]);
+            this.releaseDate = releaseDate1;
+        } catch (NullPointerException | DateTimeParseException ex) {
+            
+        }
+        
+        this.writer = props[3];
+        this.director = props[4];
+
+        try {
+            Double gross1 = Double.parseDouble(props[5]);
+            this.gross = gross1;
+        } catch (NullPointerException | NumberFormatException ex) {
+            
+        }
+        
+        try {
+            Integer nominations1 = Integer.parseInt(props[6]);
+            this.nominations = nominations1;
+        } catch (NullPointerException | NumberFormatException ex) {
+            
+        }
     }
     
     /**
@@ -337,5 +377,24 @@ public class FavoriteMovie implements Serializable {
         
         
         return output.toString();
+    }
+    
+    public static FavoriteMovie fromString(String movie) {
+        String delim = "\\t";
+        FavoriteMovie answer = null;
+        
+        if (movie == null) {
+            throw new IllegalArgumentException("movie cannot be null.");
+        }
+        
+        String[] props = movie.split(delim);
+        
+        if (props.length != 7) {
+            throw new IllegalArgumentException("movie appears to be corrupt.");
+        }
+        
+        answer = new FavoriteMovie(props);
+        
+        return answer;
     }
 }

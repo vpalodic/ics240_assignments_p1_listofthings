@@ -5,8 +5,15 @@
  */
 package edu.metrstate.ics240.vjp071.listofthings;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.time.LocalDate;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import javax.swing.AbstractListModel;
 
 /**
@@ -773,5 +780,23 @@ public class FavoriteMovieCollection extends AbstractListModel<String> implement
      */
     public void fireUpdateAt(int index) {
         fireContentsChanged(this, index, index);
+    }
+
+    public void load(File file) {
+        if (file == null || !file.isFile()) {
+            throw new IllegalArgumentException("file is null or is not a file.");
+        }
+        
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)))) {
+            while (reader.ready()) {
+                String movie = reader.readLine();
+                
+                if (movie != null && !movie.trim().isEmpty()) {
+                    this.add(FavoriteMovie.fromString(movie));
+                }
+            }
+        } catch (IOException ex) {
+            
+        }
     }
 }
