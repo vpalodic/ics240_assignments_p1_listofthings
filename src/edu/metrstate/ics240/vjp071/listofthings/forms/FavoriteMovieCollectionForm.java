@@ -22,7 +22,7 @@ import javax.swing.event.ListSelectionListener;
  *
  * @author Vincent
  */
-public class FavoriteMovieCollectionForm extends JFrame implements PropertyChangeListener {
+public class FavoriteMovieCollectionForm extends JFrame {
 
     private FavoriteMovieCollection movieCollection;
 
@@ -50,6 +50,10 @@ public class FavoriteMovieCollectionForm extends JFrame implements PropertyChang
         searchJTextField.setEnabled(false);
 
         moviesJList.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            /**
+             * This method responds to changes in the movie collection selection.
+             * @param e the selection event that triggered the event.
+             */
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 ListSelectionModel lsm = (ListSelectionModel) e.getSource();
@@ -57,6 +61,11 @@ public class FavoriteMovieCollectionForm extends JFrame implements PropertyChang
                 if (lsm.isSelectionEmpty()) {
                     editJButton.setEnabled(false);
                     deleteJButton.setEnabled(false);
+                    if (searchJButton.isEnabled()) {
+                        getRootPane().setDefaultButton(searchJButton);
+                    } else {
+                        getRootPane().setDefaultButton(addJButton);
+                    }
                 } else {
                     // Find out which indexes are selected.
                     int minIndex = lsm.getMinSelectionIndex();
@@ -66,12 +75,40 @@ public class FavoriteMovieCollectionForm extends JFrame implements PropertyChang
                             editJButton.setEnabled(true);
                             deleteJButton.setEnabled(true);
                         }
+                        if (searchJButton.isEnabled()) {
+                            getRootPane().setDefaultButton(searchJButton);
+                        } else {
+                            getRootPane().setDefaultButton(addJButton);
+                        }
                     }
                 }
             }
         });
         
-        movieCollection.addPropertyChangeListener(this);
+        movieCollection.addPropertyChangeListener(new PropertyChangeListener() {
+            /**
+             * This method responds to changes in the movie collection.
+             * @param evt the property change that triggered the event.
+             */
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                if (evt.getPropertyName().equals("size")) {
+                    if (!movieCollection.isEmpty()) {
+                        clearJButton.setEnabled(true);
+                        searchJButton.setEnabled(true);
+                        searchJTextField.setEnabled(true);
+                        getRootPane().setDefaultButton(searchJButton);
+                    } else {
+                        clearJButton.setEnabled(false);
+                        searchJButton.setEnabled(false);
+                        searchJTextField.setEnabled(false);
+                        getRootPane().setDefaultButton(addJButton);
+                    }
+                }
+            }
+        });
+        
+        getRootPane().setDefaultButton(addJButton);
     }
 
     /**
@@ -246,6 +283,7 @@ public class FavoriteMovieCollectionForm extends JFrame implements PropertyChang
 
                 if (index >= 0) {
                     moviesJList.setSelectedIndex(index);
+                    editJButton.requestFocusInWindow();
                 } else {
                     moviesJList.getSelectionModel().clearSelection();
                 }
@@ -263,6 +301,7 @@ public class FavoriteMovieCollectionForm extends JFrame implements PropertyChang
 
             if (fm != null) {
                 movieCollection.add(fm);
+                searchJTextField.requestFocusInWindow();
             }
         }
     }//GEN-LAST:event_addJButtonActionPerformed
@@ -279,6 +318,7 @@ public class FavoriteMovieCollectionForm extends JFrame implements PropertyChang
                 fmd.setVisible(true);
 
                 movieCollection.fireUpdateAt(index);
+                searchJTextField.requestFocusInWindow();
             }
         }
     }//GEN-LAST:event_editJButtonActionPerformed
@@ -295,6 +335,10 @@ public class FavoriteMovieCollectionForm extends JFrame implements PropertyChang
             if (reply == JOptionPane.YES_OPTION) {
                 movieCollection.remove(index);
                 moviesJList.getSelectionModel().clearSelection();
+                
+                if (searchJTextField.isEnabled()) {
+                    searchJTextField.requestFocusInWindow();
+                }
             }
         }
     }//GEN-LAST:event_deleteJButtonActionPerformed
@@ -390,22 +434,4 @@ public class FavoriteMovieCollectionForm extends JFrame implements PropertyChang
     private javax.swing.JTextField searchJTextField;
     // End of variables declaration//GEN-END:variables
 
-    /**
-     * This method responds to changes in the movie collection.
-     * @param evt the property change that triggered the event.
-     */
-    @Override
-    public void propertyChange(PropertyChangeEvent evt) {
-        if (evt.getPropertyName().equals("size")) {
-            if (!movieCollection.isEmpty()) {
-                clearJButton.setEnabled(true);
-                searchJButton.setEnabled(true);
-                searchJTextField.setEnabled(true);
-            } else {
-                clearJButton.setEnabled(false);
-                searchJButton.setEnabled(false);
-                searchJTextField.setEnabled(false);
-            }
-        }
-    }
 }

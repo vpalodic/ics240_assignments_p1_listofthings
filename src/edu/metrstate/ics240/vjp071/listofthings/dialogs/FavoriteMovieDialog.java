@@ -37,7 +37,6 @@ public class FavoriteMovieDialog extends JDialog {
      */
     public FavoriteMovieDialog(java.awt.Frame parent, boolean modal) {
         this(parent, modal, null);
-        okJButton.setEnabled(false);
     }
 
     /**
@@ -76,6 +75,10 @@ public class FavoriteMovieDialog extends JDialog {
                 nominationsJTextField.setText(favoriteMovie.getNominations().toString());
             }
         }
+        
+        okJButton.setEnabled(isValidMovie());
+        
+        getRootPane().setDefaultButton(okJButton);
     }
 
     /**
