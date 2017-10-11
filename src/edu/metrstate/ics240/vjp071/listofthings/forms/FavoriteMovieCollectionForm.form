@@ -26,7 +26,6 @@
                   <KeyStroke key="Ctrl+S"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Save..."/>
-                <Property name="actionCommand" type="java.lang.String" value="Save..."/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="saveJMenuItemActionPerformed"/>
@@ -136,7 +135,7 @@
     <Component class="javax.swing.JButton" name="searchJButton">
       <Properties>
         <Property name="text" type="java.lang.String" value="Search"/>
-        <Property name="toolTipText" type="java.lang.String" value="Search the Favorite Movie Collection by movie title"/>
+        <Property name="toolTipText" type="java.lang.String" value="Search the Favorite Movie Collection by movie title. If the title is found in the collection the movie will be selected in the list."/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="searchJButtonActionPerformed"/>
@@ -155,6 +154,7 @@
     <Component class="javax.swing.JButton" name="editJButton">
       <Properties>
         <Property name="text" type="java.lang.String" value="Edit"/>
+        <Property name="toolTipText" type="java.lang.String" value="Click to edit the selected movie."/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="editJButtonActionPerformed"/>
@@ -163,6 +163,7 @@
     <Component class="javax.swing.JButton" name="deleteJButton">
       <Properties>
         <Property name="text" type="java.lang.String" value="Delete"/>
+        <Property name="toolTipText" type="java.lang.String" value="Click to delete the selected movie."/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="deleteJButtonActionPerformed"/>
@@ -179,6 +180,7 @@
     <Component class="javax.swing.JButton" name="clearJButton">
       <Properties>
         <Property name="text" type="java.lang.String" value="Clear"/>
+        <Property name="toolTipText" type="java.lang.String" value="Click to remove all movies from the collection."/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="clearJButtonActionPerformed"/>

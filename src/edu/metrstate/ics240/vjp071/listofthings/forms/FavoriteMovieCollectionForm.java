@@ -107,7 +107,7 @@ public class FavoriteMovieCollectionForm extends JFrame implements PropertyChang
         searchJTextField.setToolTipText("The movie title to search for");
 
         searchJButton.setText("Search");
-        searchJButton.setToolTipText("Search the Favorite Movie Collection by movie title");
+        searchJButton.setToolTipText("Search the Favorite Movie Collection by movie title. If the title is found in the collection the movie will be selected in the list.");
         searchJButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 searchJButtonActionPerformed(evt);
@@ -124,6 +124,7 @@ public class FavoriteMovieCollectionForm extends JFrame implements PropertyChang
         });
 
         editJButton.setText("Edit");
+        editJButton.setToolTipText("Click to edit the selected movie.");
         editJButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 editJButtonActionPerformed(evt);
@@ -131,6 +132,7 @@ public class FavoriteMovieCollectionForm extends JFrame implements PropertyChang
         });
 
         deleteJButton.setText("Delete");
+        deleteJButton.setToolTipText("Click to delete the selected movie.");
         deleteJButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 deleteJButtonActionPerformed(evt);
@@ -141,6 +143,7 @@ public class FavoriteMovieCollectionForm extends JFrame implements PropertyChang
         searchJLabel.setText("Movie Title:");
 
         clearJButton.setText("Clear");
+        clearJButton.setToolTipText("Click to remove all movies from the collection.");
         clearJButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 clearJButtonActionPerformed(evt);
@@ -164,7 +167,6 @@ public class FavoriteMovieCollectionForm extends JFrame implements PropertyChang
 
         saveJMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
         saveJMenuItem.setText("Save...");
-        saveJMenuItem.setActionCommand("Save...");
         saveJMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 saveJMenuItemActionPerformed(evt);

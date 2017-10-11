@@ -13,10 +13,11 @@ import javax.swing.JDialog;
 /**
  * An input form for displaying and modifying the properties of a single
  * FavoriteMovie object.
- * 
+ *
  * @author Vincent
  */
 public class FavoriteMovieDialog extends JDialog {
+
     private FavoriteMovie favoriteMovie;
 
     public FavoriteMovie getFavoriteMovie() {
@@ -29,30 +30,34 @@ public class FavoriteMovieDialog extends JDialog {
 
     /**
      * Creates new form FavoriteMovieDialog
+     *
      * @param parent The JFrame that owns this dialog
      * @param modal If true, input to the owner JFrame is restricted until this
      * dialog is dismissed.
      */
     public FavoriteMovieDialog(java.awt.Frame parent, boolean modal) {
         this(parent, modal, null);
+        okJButton.setEnabled(false);
     }
+
     /**
      * Creates new form FavoriteMovieDialog
+     *
      * @param parent The JFrame that owns this dialog
      * @param modal If true, input to the owner JFrame is restricted until this
-     * @param fm The FavoriteMovie to initialize the dialog with.
-     * dialog is dismissed.
+     * @param fm The FavoriteMovie to initialize the dialog with. dialog is
+     * dismissed.
      */
     public FavoriteMovieDialog(java.awt.Frame parent, boolean modal, FavoriteMovie fm) {
         super(parent, modal);
         initComponents();
         favoriteMovie = fm;
-        
+
         if (favoriteMovie != null) {
             if (favoriteMovie.getImdb() != null) {
                 imdbJTextField.setText(favoriteMovie.getImdb().toString());
             }
-            if (favoriteMovie.getTitle() != null) {
+            if (favoriteMovie.getTitle() != null && !favoriteMovie.getTitle().trim().isEmpty()) {
                 titleJTextField.setText(favoriteMovie.getTitle());
             }
             if (favoriteMovie.getReleaseDate() != null) {
@@ -65,13 +70,13 @@ public class FavoriteMovieDialog extends JDialog {
                 writerJTextField.setText(favoriteMovie.getWriter().toString());
             }
             if (favoriteMovie.getGross() != null) {
-                grossJTextField.setText(favoriteMovie.getGross().toString());
+                grossJTextField.setText(String.format("%.2f", favoriteMovie.getGross()));
             }
             if (favoriteMovie.getNominations() != null) {
                 nominationsJTextField.setText(favoriteMovie.getNominations().toString());
             }
         }
-}
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -111,21 +116,31 @@ public class FavoriteMovieDialog extends JDialog {
         imdbJLabel.setToolTipText("The IMDB number for this movie");
 
         imdbJTextField.setToolTipText("Please enter the the IMDB number for this movie, if any. Limit 7 digits.");
+        imdbJTextField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                FavoriteMovieDialog.this.keyReleased(evt);
+            }
+        });
 
         titleJLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         titleJLabel.setText("Title:");
         titleJLabel.setToolTipText("This movie's title");
 
         titleJTextField.setToolTipText("Please enter the title of this movie, required. Limit 255 characters.");
+        titleJTextField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                FavoriteMovieDialog.this.keyReleased(evt);
+            }
+        });
 
         releaseYearJLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         releaseYearJLabel.setText("Release Date:");
         releaseYearJLabel.setToolTipText("The date this movie was released in theaters.");
 
         releaseYearJTextField.setToolTipText("Please enter the year, month, and day this movie was released in theaters (yyyy-MM-dd), if any.");
-        releaseYearJTextField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                releaseYearJTextFieldActionPerformed(evt);
+        releaseYearJTextField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                FavoriteMovieDialog.this.keyReleased(evt);
             }
         });
 
@@ -134,24 +149,44 @@ public class FavoriteMovieDialog extends JDialog {
         directorJLabel.setToolTipText("The director of this movie.");
 
         directorJTextField.setToolTipText("Please enter the name of the director for this movie, if any. Limit 120 characters.");
+        directorJTextField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                FavoriteMovieDialog.this.keyReleased(evt);
+            }
+        });
 
         writerJLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         writerJLabel.setText("Writer:");
         writerJLabel.setToolTipText("The writer of this movie.");
 
         writerJTextField.setToolTipText("Please enter the name of the writer for this movie, if any. Limit 120 characters.");
+        writerJTextField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                FavoriteMovieDialog.this.keyReleased(evt);
+            }
+        });
 
         grossJLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         grossJLabel.setText("Box Office Gross:");
         grossJLabel.setToolTipText("Gross sales at the box-office for this movie.");
 
         grossJTextField.setToolTipText("Please enter the Box Office Gross for this movie, if any.");
+        grossJTextField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                FavoriteMovieDialog.this.keyReleased(evt);
+            }
+        });
 
         nominationsJLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         nominationsJLabel.setText("Oscar Nominations:");
         nominationsJLabel.setToolTipText("The total number of Oscar nominations this movie received.");
 
         nominationsJTextField.setToolTipText("Please enter the number of Oscar nominations this movie received, if any.");
+        nominationsJTextField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                FavoriteMovieDialog.this.keyReleased(evt);
+            }
+        });
 
         okJButton.setText("OK");
         okJButton.setToolTipText("Press OK to add or update this movie in the collection.");
@@ -166,6 +201,7 @@ public class FavoriteMovieDialog extends JDialog {
         });
 
         cancelButton.setText("Cancel");
+        cancelButton.setToolTipText("Click cancel to dismiss this dialog and disregard any pending changes.");
         cancelButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cancelButtonActionPerformed(evt);
@@ -258,18 +294,18 @@ public class FavoriteMovieDialog extends JDialog {
         Double gross = null;
         String nominationsString = null;
         Integer nominations = null;
-        
+
         boolean validated = true;
-        
+
         if (imdbJTextField.getDocument() != null) {
             imdbString = imdbJTextField.getText();
-            
+
             if (imdbString == null || imdbString.trim().isEmpty()) {
                 imdbString = null;
             } else {
                 try {
                     imdbString = imdbString.trim();
-                    
+
                     if (imdbString.length() <= 7) {
                         imdb = Integer.parseInt(imdbString);
 
@@ -284,75 +320,75 @@ public class FavoriteMovieDialog extends JDialog {
                 }
             }
         }
-        
+
         if (titleJTextField.getDocument() != null) {
             title = titleJTextField.getText();
-            
+
             if (title == null || title.trim().isEmpty()) {
                 title = null;
                 validated = false;
             } else {
                 title = title.trim();
-                
+
                 if (title.length() > 255) {
                     validated = false;
                 }
             }
         }
-        
+
         if (releaseYearJTextField.getDocument() != null) {
             releaseDateString = releaseYearJTextField.getText();
-            
+
             if (releaseDateString == null || releaseDateString.trim().isEmpty()) {
                 releaseDateString = null;
             } else {
                 try {
                     releaseDateString = releaseDateString.trim();
-                    
+
                     releaseDate = LocalDate.parse(releaseDateString);
                 } catch (DateTimeParseException ex) {
                     validated = false;
                 }
             }
         }
-        
+
         if (directorJTextField.getDocument() != null) {
             director = directorJTextField.getText();
-            
+
             if (director == null || director.trim().isEmpty()) {
                 director = null;
             } else {
                 director = director.trim();
-                
+
                 if (director.length() > 120) {
                     validated = false;
                 }
             }
         }
-        
+
         if (writerJTextField.getDocument() != null) {
             writer = writerJTextField.getText();
-            
+
             if (writer == null || writer.trim().isEmpty()) {
                 writer = null;
             } else {
                 writer = writer.trim();
-                
+
                 if (writer.length() > 120) {
                     validated = false;
                 }
             }
         }
-        
+
         if (grossJTextField.getDocument() != null) {
             grossString = grossJTextField.getText();
-            
+
             if (grossString == null || grossString.trim().isEmpty()) {
                 grossString = null;
             } else {
                 try {
                     grossString = grossString.trim();
-                    
+
                     gross = Double.parseDouble(grossString);
 
                     if (gross < 0) {
@@ -363,16 +399,16 @@ public class FavoriteMovieDialog extends JDialog {
                 }
             }
         }
-        
+
         if (nominationsJTextField.getDocument() != null) {
             nominationsString = nominationsJTextField.getText();
-            
+
             if (nominationsString == null || nominationsString.trim().isEmpty()) {
                 nominationsString = null;
             } else {
                 try {
                     nominationsString = nominationsString.trim();
-                    
+
                     nominations = Integer.parseInt(nominationsString);
 
                     if (nominations < 0) {
@@ -383,12 +419,12 @@ public class FavoriteMovieDialog extends JDialog {
                 }
             }
         }
-        
+
         if (validated) {
             if (favoriteMovie == null) {
                 favoriteMovie = new FavoriteMovie();
             }
-        
+
             favoriteMovie.setImdb(imdb);
             favoriteMovie.setTitle(title);
             favoriteMovie.setReleaseDate(releaseDate);
@@ -396,7 +432,7 @@ public class FavoriteMovieDialog extends JDialog {
             favoriteMovie.setWriter(writer);
             favoriteMovie.setGross(gross);
             favoriteMovie.setNominations(nominations);
-            
+
             dispose();
         }
     }//GEN-LAST:event_okJButtonActionPerformed
@@ -406,9 +442,155 @@ public class FavoriteMovieDialog extends JDialog {
         dispose();
     }//GEN-LAST:event_cancelButtonActionPerformed
 
-    private void releaseYearJTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_releaseYearJTextFieldActionPerformed
+    private void keyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_keyReleased
         // TODO add your handling code here:
-    }//GEN-LAST:event_releaseYearJTextFieldActionPerformed
+        if (isValidMovie()) {
+            okJButton.setEnabled(true);
+        } else {
+            okJButton.setEnabled(false);
+        }
+    }//GEN-LAST:event_keyReleased
+
+    private boolean isValidMovie() {
+        // TODO add your handling code here:
+        String imdbString = null;
+        Integer imdb = null;
+        String title = null;
+        String releaseDateString = null;
+        LocalDate releaseDate = null;
+        String director = null;
+        String writer = null;
+        String grossString = null;
+        Double gross = null;
+        String nominationsString = null;
+        Integer nominations = null;
+
+        boolean validated = true;
+
+        if (imdbJTextField.getDocument() != null) {
+            imdbString = imdbJTextField.getText();
+
+            if (imdbString == null || imdbString.trim().isEmpty()) {
+                imdbString = null;
+            } else {
+                try {
+                    imdbString = imdbString.trim();
+
+                    if (imdbString.length() <= 7) {
+                        imdb = Integer.parseInt(imdbString);
+
+                        if (imdb < 0) {
+                            validated = false;
+                        }
+                    } else {
+                        validated = false;
+                    }
+                } catch (NumberFormatException ex) {
+                    validated = false;
+                }
+            }
+        }
+
+        if (titleJTextField.getDocument() != null) {
+            title = titleJTextField.getText();
+
+            if (title == null || title.trim().isEmpty()) {
+                title = null;
+                validated = false;
+            } else {
+                title = title.trim();
+
+                if (title.length() > 255) {
+                    validated = false;
+                }
+            }
+        }
+
+        if (releaseYearJTextField.getDocument() != null) {
+            releaseDateString = releaseYearJTextField.getText();
+
+            if (releaseDateString == null || releaseDateString.trim().isEmpty()) {
+                releaseDateString = null;
+            } else {
+                try {
+                    releaseDateString = releaseDateString.trim();
+
+                    releaseDate = LocalDate.parse(releaseDateString);
+                } catch (DateTimeParseException ex) {
+                    validated = false;
+                }
+            }
+        }
+
+        if (directorJTextField.getDocument() != null) {
+            director = directorJTextField.getText();
+
+            if (director == null || director.trim().isEmpty()) {
+                director = null;
+            } else {
+                director = director.trim();
+
+                if (director.length() > 120) {
+                    validated = false;
+                }
+            }
+        }
+
+        if (writerJTextField.getDocument() != null) {
+            writer = writerJTextField.getText();
+
+            if (writer == null || writer.trim().isEmpty()) {
+                writer = null;
+            } else {
+                writer = writer.trim();
+
+                if (writer.length() > 120) {
+                    validated = false;
+                }
+            }
+        }
+
+        if (grossJTextField.getDocument() != null) {
+            grossString = grossJTextField.getText();
+
+            if (grossString == null || grossString.trim().isEmpty()) {
+                grossString = null;
+            } else {
+                try {
+                    grossString = grossString.trim();
+
+                    gross = Double.parseDouble(grossString);
+
+                    if (gross < 0) {
+                        validated = false;
+                    }
+                } catch (NumberFormatException ex) {
+                    validated = false;
+                }
+            }
+        }
+
+        if (nominationsJTextField.getDocument() != null) {
+            nominationsString = nominationsJTextField.getText();
+
+            if (nominationsString == null || nominationsString.trim().isEmpty()) {
+                nominationsString = null;
+            } else {
+                try {
+                    nominationsString = nominationsString.trim();
+
+                    nominations = Integer.parseInt(nominationsString);
+
+                    if (nominations < 0) {
+                        validated = false;
+                    }
+                } catch (NumberFormatException ex) {
+                    validated = false;
+                }
+            }
+        }
+        return validated;
+    }
 
     /**
      * @param args the command line arguments

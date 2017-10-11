@@ -118,6 +118,9 @@
       <Properties>
         <Property name="toolTipText" type="java.lang.String" value="Please enter the the IMDB number for this movie, if any. Limit 7 digits."/>
       </Properties>
+      <Events>
+        <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="keyReleased"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="titleJLabel">
       <Properties>
@@ -130,6 +133,9 @@
       <Properties>
         <Property name="toolTipText" type="java.lang.String" value="Please enter the title of this movie, required. Limit 255 characters."/>
       </Properties>
+      <Events>
+        <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="keyReleased"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="releaseYearJLabel">
       <Properties>
@@ -143,7 +149,7 @@
         <Property name="toolTipText" type="java.lang.String" value="Please enter the year, month, and day this movie was released in theaters (yyyy-MM-dd), if any."/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="releaseYearJTextFieldActionPerformed"/>
+        <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="keyReleased"/>
       </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="directorJLabel">
@@ -157,6 +163,9 @@
       <Properties>
         <Property name="toolTipText" type="java.lang.String" value="Please enter the name of the director for this movie, if any. Limit 120 characters."/>
       </Properties>
+      <Events>
+        <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="keyReleased"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="writerJLabel">
       <Properties>
@@ -169,6 +178,9 @@
       <Properties>
         <Property name="toolTipText" type="java.lang.String" value="Please enter the name of the writer for this movie, if any. Limit 120 characters."/>
       </Properties>
+      <Events>
+        <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="keyReleased"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="grossJLabel">
       <Properties>
@@ -181,6 +193,9 @@
       <Properties>
         <Property name="toolTipText" type="java.lang.String" value="Please enter the Box Office Gross for this movie, if any."/>
       </Properties>
+      <Events>
+        <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="keyReleased"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="nominationsJLabel">
       <Properties>
@@ -193,6 +208,9 @@
       <Properties>
         <Property name="toolTipText" type="java.lang.String" value="Please enter the number of Oscar nominations this movie received, if any."/>
       </Properties>
+      <Events>
+        <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="keyReleased"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="okJButton">
       <Properties>
@@ -209,6 +227,7 @@
     <Component class="javax.swing.JButton" name="cancelButton">
       <Properties>
         <Property name="text" type="java.lang.String" value="Cancel"/>
+        <Property name="toolTipText" type="java.lang.String" value="Click cancel to dismiss this dialog and disregard any pending changes."/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cancelButtonActionPerformed"/>
