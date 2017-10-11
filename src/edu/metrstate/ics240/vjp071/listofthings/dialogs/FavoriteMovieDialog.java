@@ -8,6 +8,7 @@ package edu.metrstate.ics240.vjp071.listofthings.dialogs;
 import edu.metrstate.ics240.vjp071.listofthings.FavoriteMovie;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import javax.swing.JDialog;
 
 /**
  * An input form for displaying and modifying the properties of a single
@@ -15,7 +16,7 @@ import java.time.format.DateTimeParseException;
  * 
  * @author Vincent
  */
-public class FavoriteMovieDialog extends javax.swing.JDialog {
+public class FavoriteMovieDialog extends JDialog {
     private FavoriteMovie favoriteMovie;
 
     public FavoriteMovie getFavoriteMovie() {
@@ -80,6 +81,7 @@ public class FavoriteMovieDialog extends javax.swing.JDialog {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        bindingGroup = new org.jdesktop.beansbinding.BindingGroup();
 
         imdbJLabel = new javax.swing.JLabel();
         imdbJTextField = new javax.swing.JTextField();
@@ -153,6 +155,10 @@ public class FavoriteMovieDialog extends javax.swing.JDialog {
 
         okJButton.setText("OK");
         okJButton.setToolTipText("Press OK to add or update this movie in the collection.");
+
+        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, titleJTextField, org.jdesktop.beansbinding.ELProperty.create("${text.size > 0}"), okJButton, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
+        bindingGroup.addBinding(binding);
+
         okJButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 okJButtonActionPerformed(evt);
@@ -232,6 +238,8 @@ public class FavoriteMovieDialog extends javax.swing.JDialog {
                     .addComponent(cancelButton))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
+
+        bindingGroup.bind();
 
         pack();
         setLocationRelativeTo(null);
@@ -461,5 +469,6 @@ public class FavoriteMovieDialog extends javax.swing.JDialog {
     private javax.swing.JTextField titleJTextField;
     private javax.swing.JLabel writerJLabel;
     private javax.swing.JTextField writerJTextField;
+    private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
 }

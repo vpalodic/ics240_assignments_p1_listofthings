@@ -8,13 +8,11 @@ package edu.metrstate.ics240.vjp071.listofthings.forms;
 import edu.metrstate.ics240.vjp071.listofthings.FavoriteMovie;
 import edu.metrstate.ics240.vjp071.listofthings.FavoriteMovieCollection;
 import edu.metrstate.ics240.vjp071.listofthings.dialogs.FavoriteMovieDialog;
+import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 import java.io.File;
-import java.nio.file.Paths;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
@@ -24,7 +22,7 @@ import javax.swing.event.ListSelectionListener;
  *
  * @author Vincent
  */
-public class FavoriteMovieCollectionForm extends javax.swing.JFrame {
+public class FavoriteMovieCollectionForm extends JFrame implements PropertyChangeListener {
 
     private FavoriteMovieCollection movieCollection;
 
@@ -72,6 +70,8 @@ public class FavoriteMovieCollectionForm extends javax.swing.JFrame {
                 }
             }
         });
+        
+        movieCollection.addPropertyChangeListener(this);
     }
 
     /**
@@ -244,8 +244,6 @@ public class FavoriteMovieCollectionForm extends javax.swing.JFrame {
 
                 if (index >= 0) {
                     moviesJList.setSelectedIndex(index);
-                    editJButton.setEnabled(true);
-                    deleteJButton.setEnabled(true);
                 } else {
                     moviesJList.getSelectionModel().clearSelection();
                 }
@@ -262,12 +260,6 @@ public class FavoriteMovieCollectionForm extends javax.swing.JFrame {
             FavoriteMovie fm = fmd.getFavoriteMovie();
 
             if (fm != null) {
-                if (movieCollection.isEmpty()) {
-                    clearJButton.setEnabled(true);
-                    searchJButton.setEnabled(true);
-                    searchJTextField.setEnabled(true);
-                }
-                
                 movieCollection.add(fm);
             }
         }
@@ -303,13 +295,6 @@ public class FavoriteMovieCollectionForm extends javax.swing.JFrame {
                 moviesJList.getSelectionModel().clearSelection();
             }
         }
-
-        if (movieCollection.isEmpty()) {
-            clearJButton.setEnabled(false);
-            searchJButton.setEnabled(false);
-            searchJTextField.setEnabled(false);
-        }
-
     }//GEN-LAST:event_deleteJButtonActionPerformed
 
     private void clearJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearJButtonActionPerformed
@@ -320,11 +305,6 @@ public class FavoriteMovieCollectionForm extends javax.swing.JFrame {
         if (reply == JOptionPane.YES_OPTION) {
             if (!movieCollection.isEmpty()) {
                 movieCollection.removeAll();
-                clearJButton.setEnabled(false);
-                editJButton.setEnabled(false);
-                deleteJButton.setEnabled(false);
-                searchJButton.setEnabled(false);
-                searchJTextField.setEnabled(false);
             }
         }
     }//GEN-LAST:event_clearJButtonActionPerformed
@@ -407,4 +387,23 @@ public class FavoriteMovieCollectionForm extends javax.swing.JFrame {
     private javax.swing.JLabel searchJLabel;
     private javax.swing.JTextField searchJTextField;
     // End of variables declaration//GEN-END:variables
+
+    /**
+     * This method responds to changes in the movie collection.
+     * @param evt the property change that triggered the event.
+     */
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        if (evt.getPropertyName().equals("size")) {
+            if (!movieCollection.isEmpty()) {
+                clearJButton.setEnabled(true);
+                searchJButton.setEnabled(true);
+                searchJTextField.setEnabled(true);
+            } else {
+                clearJButton.setEnabled(false);
+                searchJButton.setEnabled(false);
+                searchJTextField.setEnabled(false);
+            }
+        }
+    }
 }

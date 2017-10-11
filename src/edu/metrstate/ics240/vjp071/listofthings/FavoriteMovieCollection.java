@@ -5,6 +5,8 @@
  */
 package edu.metrstate.ics240.vjp071.listofthings;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -15,8 +17,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.time.LocalDate;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 import javax.swing.AbstractListModel;
 
 /**
@@ -49,6 +49,7 @@ import javax.swing.AbstractListModel;
  * <A HREF="mailto:hu0011wy@metrostate.edu"> (e-mail me) </A>
  */
 public class FavoriteMovieCollection extends AbstractListModel<String> implements Cloneable, Iterable<FavoriteMovie> {
+    private transient final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
     private static int DEFAULT_INITIAL_CAPACITY = 16;
     private FavoriteMovie[] movies;
@@ -178,6 +179,7 @@ public class FavoriteMovieCollection extends AbstractListModel<String> implement
 
         // Add the new movie to the end of the sequence.
         movies[numberOfMovies++] = favoriteMovie;
+        pcs.firePropertyChange("size", numberOfMovies - 1, numberOfMovies);
         fireContentsChanged(this, numberOfMovies - 1, numberOfMovies);
 
         return favoriteMovie;
@@ -281,6 +283,7 @@ public class FavoriteMovieCollection extends AbstractListModel<String> implement
         // Add the new movies to the end of the sequence.
         System.arraycopy(favoriteMovies.movies, 0, movies, numberOfMovies, favoriteMovies.size());
         numberOfMovies += favoriteMovies.size();
+        pcs.firePropertyChange("size", numberOfMovies - favoriteMovies.size(), numberOfMovies);
         fireIntervalAdded(this, numberOfMovies - favoriteMovies.size(), numberOfMovies);
     }
 
@@ -331,6 +334,7 @@ public class FavoriteMovieCollection extends AbstractListModel<String> implement
         // Add the new movies to the end of the sequence.
         System.arraycopy(favoriteMovies, 0, movies, numberOfMovies, favoriteMovies.length);
         numberOfMovies += favoriteMovies.length;
+        pcs.firePropertyChange("size", numberOfMovies - favoriteMovies.length, numberOfMovies);
         fireIntervalAdded(this, numberOfMovies - favoriteMovies.length, numberOfMovies);
     }
 
@@ -389,7 +393,8 @@ public class FavoriteMovieCollection extends AbstractListModel<String> implement
                 answer = movie;
                 movies[i] = movies[numberOfMovies-- - 1];
                 movies[numberOfMovies] = null;
-                fireContentsChanged(this, i, numberOfMovies);
+                pcs.firePropertyChange("size", numberOfMovies + 1, numberOfMovies);
+                fireContentsChanged(this, i, numberOfMovies);                
                 break;
             }
         }
@@ -446,6 +451,7 @@ public class FavoriteMovieCollection extends AbstractListModel<String> implement
         FavoriteMovie answer = movies[index];
         movies[index] = movies[numberOfMovies-- - 1];
         movies[numberOfMovies] = null;
+        pcs.firePropertyChange("size", numberOfMovies + 1, numberOfMovies);
         fireContentsChanged(this, index, numberOfMovies);
 
         return answer;
@@ -469,6 +475,7 @@ public class FavoriteMovieCollection extends AbstractListModel<String> implement
             return;
         }
 
+        int oldValue = numberOfMovies;
         int end = numberOfMovies;
         int start = numberOfMovies - 1;
         
@@ -478,11 +485,14 @@ public class FavoriteMovieCollection extends AbstractListModel<String> implement
             numberOfMovies--;
             
             if (end % 10 == 0) {
+                pcs.firePropertyChange("size", oldValue, numberOfMovies);
+                oldValue = numberOfMovies;
                 fireIntervalRemoved(this, end, start);
                 start = end;
             }
         }
         
+        pcs.firePropertyChange("size", oldValue, numberOfMovies);
         fireIntervalRemoved(this, 0, start);
     }
 
@@ -606,9 +616,11 @@ public class FavoriteMovieCollection extends AbstractListModel<String> implement
         FavoriteMovie[] biggerArray = null;
 
         if (movies.length < minimumCapacity) {
+            int oldCapacity = movies.length;
             biggerArray = new FavoriteMovie[minimumCapacity];
             System.arraycopy(movies, 0, biggerArray, 0, numberOfMovies);
             movies = biggerArray;
+            pcs.firePropertyChange("capacity", oldCapacity, movies.length);
         }
     }
 
@@ -647,9 +659,11 @@ public class FavoriteMovieCollection extends AbstractListModel<String> implement
         FavoriteMovie[] trimmedArray = null;
 
         if (movies.length != numberOfMovies) {
+            int oldCapacity = movies.length;
             trimmedArray = new FavoriteMovie[numberOfMovies];
             System.arraycopy(movies, 0, trimmedArray, 0, numberOfMovies);
             movies = trimmedArray;
+            pcs.firePropertyChange("capacity", oldCapacity, movies.length);
         }
     }
 
@@ -835,5 +849,25 @@ public class FavoriteMovieCollection extends AbstractListModel<String> implement
         } catch (IOException ex) {
             
         }
+    }
+    
+    /**
+     * Add PropertyChangeListener.
+     *
+     * @param listener
+     */
+    public void addPropertyChangeListener(PropertyChangeListener listener )
+    {
+        pcs.addPropertyChangeListener( listener );
+    }
+
+    /**
+     * Remove PropertyChangeListener.
+     *
+     * @param listener
+     */
+    public void removePropertyChangeListener(PropertyChangeListener listener )
+    {
+        pcs.removePropertyChangeListener( listener );
     }
 }

@@ -5,6 +5,8 @@
  */
 package edu.metrstate.ics240.vjp071.listofthings;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
 import java.text.NumberFormat;
 import java.time.LocalDate;
@@ -43,6 +45,7 @@ import java.util.Objects;
  * @author Vincent
  */
 public class FavoriteMovie implements Serializable {
+    private transient final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
     /**
      * The constant value returned from getYearsReleased() if no release date
@@ -90,7 +93,7 @@ public class FavoriteMovie implements Serializable {
             
         }
         
-        this.title = props[1];
+        this.title = (props[1] == null || props[1].trim().isEmpty()) ? null : props[1].trim();
         
         try {
             LocalDate releaseDate1 = LocalDate.parse(props[2]);
@@ -99,8 +102,8 @@ public class FavoriteMovie implements Serializable {
             
         }
         
-        this.writer = props[3];
-        this.director = props[4];
+        this.writer = (props[3] == null || props[3].trim().isEmpty()) ? null : props[3].trim();
+        this.director = (props[4] == null || props[4].trim().isEmpty()) ? null : props[4].trim();
 
         try {
             Double gross1 = Double.parseDouble(props[5]);
@@ -133,7 +136,9 @@ public class FavoriteMovie implements Serializable {
      * @param imdb The new IMDB number for this movie, which may be null
      */
     public void setImdb(Integer imdb) {
+        Integer oldValue = this.imdb;
         this.imdb = imdb;
+        pcs.firePropertyChange("imdb", oldValue, imdb);
     }
     
     /**
@@ -151,7 +156,9 @@ public class FavoriteMovie implements Serializable {
      * @param title The new title for this movie, which may be null
      */
     public void setTitle(String title) {
+        String oldValue = this.title;
         this.title = title;
+        pcs.firePropertyChange("title", oldValue, title);
     }
 
     /**
@@ -171,7 +178,15 @@ public class FavoriteMovie implements Serializable {
      * may be null.
      */
     public void setReleaseDate(LocalDate releaseDate) {
+        LocalDate oldValue = this.releaseDate;
+        int oldYR = getYearsReleased();
         this.releaseDate = releaseDate;
+        int newYR = getYearsReleased();
+        pcs.firePropertyChange("releaseDate", oldValue, releaseDate);
+        
+        if (oldYR != newYR) {
+            pcs.firePropertyChange("yearsReleased", oldYR, newYR);
+        }
     }
 
     /**
@@ -189,7 +204,9 @@ public class FavoriteMovie implements Serializable {
      * @param writer The new writer for this movie, which may be null.
      */
     public void setWriter(String writer) {
+        String oldValue = this.writer;
         this.writer = writer;
+        pcs.firePropertyChange("writer", oldValue, writer);
     }
 
     /**
@@ -207,7 +224,9 @@ public class FavoriteMovie implements Serializable {
      * @param director The new director for this movie, which may be null.
      */
     public void setDirector(String director) {
+        String oldValue = this.director;
         this.director = director;
+        pcs.firePropertyChange("director", oldValue, director);
     }
 
     /**
@@ -225,7 +244,9 @@ public class FavoriteMovie implements Serializable {
      * @param gross The new box-office gross for this movie, which may be null.
      */
     public void setGross(Double gross) {
+        Double oldValue = this.gross;
         this.gross = gross;
+        pcs.firePropertyChange("gross", oldValue, gross);
     }
 
     /**
@@ -246,7 +267,9 @@ public class FavoriteMovie implements Serializable {
      * which may be null.
      */
     public void setNominations(Integer nominations) {
+        Integer oldValue = this.nominations;
         this.nominations = nominations;
+        pcs.firePropertyChange("nominations", oldValue, nominations);
     }
 
     /**
@@ -378,28 +401,28 @@ public class FavoriteMovie implements Serializable {
         String delim = "\t";
         
         if (imdb == null) {
-            output.append("");
+            output.append(" ");
         } else {
             output.append(String.format("%07d", imdb));
         }
         
         output.append(delim);
-        output.append(String.format("%s", title == null ? "" : title));
+        output.append(String.format("%s", title == null ? " " : title));
         output.append(delim);
-        output.append(String.format("%s", releaseDate == null ? "" : releaseDate.toString()));
+        output.append(String.format("%s", releaseDate == null ? " " : releaseDate.toString()));
         output.append(delim);
-        output.append(String.format("%s", director == null ? "" : director));
+        output.append(String.format("%s", director == null ? " " : director));
         output.append(delim);
-        output.append(String.format("%s", writer == null ? "" : writer));
+        output.append(String.format("%s", writer == null ? " " : writer));
         output.append(delim);
         if (gross == null) {
-            output.append("");
+            output.append(" ");
         } else {
             output.append(String.format("%.2f", gross));
         }
         output.append(delim);
         if (nominations == null) {
-            output.append("");
+            output.append(" ");
         } else {
             output.append(String.format("%02d", nominations));
         }
@@ -493,5 +516,25 @@ public class FavoriteMovie implements Serializable {
         answer = new FavoriteMovie(props);
         
         return answer;
+    }
+    
+    /**
+     * Add PropertyChangeListener.
+     *
+     * @param listener
+     */
+    public void addPropertyChangeListener(PropertyChangeListener listener )
+    {
+        pcs.addPropertyChangeListener( listener );
+    }
+
+    /**
+     * Remove PropertyChangeListener.
+     *
+     * @param listener
+     */
+    public void removePropertyChangeListener(PropertyChangeListener listener )
+    {
+        pcs.removePropertyChangeListener( listener );
     }
 }
