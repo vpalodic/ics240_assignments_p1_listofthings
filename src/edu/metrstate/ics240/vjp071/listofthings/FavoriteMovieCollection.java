@@ -775,7 +775,7 @@ public class FavoriteMovieCollection extends AbstractListModel<String> implement
     }
 
     /**
-     * Notifies listeners that the date at this index changed.
+     * Notifies listeners that the data at this index changed.
      * @param index the value of index
      */
     public void fireUpdateAt(int index) {
