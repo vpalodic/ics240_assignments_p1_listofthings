@@ -73,6 +73,7 @@ public class FavoriteMovieCollectionForm extends JFrame {
                     for (int i = minIndex; i <= maxIndex; i++) {
                         if (lsm.isSelectedIndex(i)) {
                             editJButton.setEnabled(true);
+                            editJButton.requestFocusInWindow();
                             deleteJButton.setEnabled(true);
                         }
                         if (searchJButton.isEnabled()) {
@@ -109,6 +110,7 @@ public class FavoriteMovieCollectionForm extends JFrame {
         });
         
         getRootPane().setDefaultButton(addJButton);
+        pack();
     }
 
     /**
@@ -283,7 +285,6 @@ public class FavoriteMovieCollectionForm extends JFrame {
 
                 if (index >= 0) {
                     moviesJList.setSelectedIndex(index);
-                    editJButton.requestFocusInWindow();
                 } else {
                     moviesJList.getSelectionModel().clearSelection();
                 }

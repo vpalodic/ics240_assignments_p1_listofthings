@@ -79,6 +79,7 @@ public class FavoriteMovieDialog extends JDialog {
         okJButton.setEnabled(isValidMovie());
         
         getRootPane().setDefaultButton(okJButton);
+        pack();
     }
 
     /**
@@ -119,6 +120,7 @@ public class FavoriteMovieDialog extends JDialog {
         imdbJLabel.setToolTipText("The IMDB number for this movie");
 
         imdbJTextField.setToolTipText("Please enter the the IMDB number for this movie, if any. Limit 7 digits.");
+        imdbJTextField.setPreferredSize(new java.awt.Dimension(125, 20));
         imdbJTextField.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 FavoriteMovieDialog.this.keyReleased(evt);
@@ -130,6 +132,7 @@ public class FavoriteMovieDialog extends JDialog {
         titleJLabel.setToolTipText("This movie's title");
 
         titleJTextField.setToolTipText("Please enter the title of this movie, required. Limit 255 characters.");
+        titleJTextField.setPreferredSize(new java.awt.Dimension(125, 20));
         titleJTextField.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 FavoriteMovieDialog.this.keyReleased(evt);
@@ -141,6 +144,7 @@ public class FavoriteMovieDialog extends JDialog {
         releaseYearJLabel.setToolTipText("The date this movie was released in theaters.");
 
         releaseYearJTextField.setToolTipText("Please enter the year, month, and day this movie was released in theaters (yyyy-MM-dd), if any.");
+        releaseYearJTextField.setPreferredSize(new java.awt.Dimension(125, 20));
         releaseYearJTextField.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 FavoriteMovieDialog.this.keyReleased(evt);
@@ -152,6 +156,7 @@ public class FavoriteMovieDialog extends JDialog {
         directorJLabel.setToolTipText("The director of this movie.");
 
         directorJTextField.setToolTipText("Please enter the name of the director for this movie, if any. Limit 120 characters.");
+        directorJTextField.setPreferredSize(new java.awt.Dimension(125, 20));
         directorJTextField.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 FavoriteMovieDialog.this.keyReleased(evt);
@@ -163,6 +168,7 @@ public class FavoriteMovieDialog extends JDialog {
         writerJLabel.setToolTipText("The writer of this movie.");
 
         writerJTextField.setToolTipText("Please enter the name of the writer for this movie, if any. Limit 120 characters.");
+        writerJTextField.setPreferredSize(new java.awt.Dimension(125, 20));
         writerJTextField.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 FavoriteMovieDialog.this.keyReleased(evt);
@@ -174,6 +180,7 @@ public class FavoriteMovieDialog extends JDialog {
         grossJLabel.setToolTipText("Gross sales at the box-office for this movie.");
 
         grossJTextField.setToolTipText("Please enter the Box Office Gross for this movie, if any.");
+        grossJTextField.setPreferredSize(new java.awt.Dimension(125, 20));
         grossJTextField.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 FavoriteMovieDialog.this.keyReleased(evt);
@@ -185,6 +192,7 @@ public class FavoriteMovieDialog extends JDialog {
         nominationsJLabel.setToolTipText("The total number of Oscar nominations this movie received.");
 
         nominationsJTextField.setToolTipText("Please enter the number of Oscar nominations this movie received, if any.");
+        nominationsJTextField.setPreferredSize(new java.awt.Dimension(125, 20));
         nominationsJTextField.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 FavoriteMovieDialog.this.keyReleased(evt);
@@ -230,13 +238,13 @@ public class FavoriteMovieDialog extends JDialog {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(imdbJTextField)
-                        .addComponent(titleJTextField)
-                        .addComponent(releaseYearJTextField)
-                        .addComponent(directorJTextField)
-                        .addComponent(writerJTextField)
-                        .addComponent(grossJTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(nominationsJTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(titleJTextField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(releaseYearJTextField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(directorJTextField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(writerJTextField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(grossJTextField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(nominationsJTextField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(imdbJTextField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(cancelButton))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -246,31 +254,31 @@ public class FavoriteMovieDialog extends JDialog {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(imdbJLabel)
-                    .addComponent(imdbJTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(imdbJTextField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(titleJLabel)
-                    .addComponent(titleJTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(titleJTextField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(releaseYearJLabel)
-                    .addComponent(releaseYearJTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(releaseYearJTextField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(directorJLabel)
-                    .addComponent(directorJTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(directorJTextField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(writerJLabel)
-                    .addComponent(writerJTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(writerJTextField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(grossJLabel)
-                    .addComponent(grossJTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(grossJTextField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(nominationsJLabel)
-                    .addComponent(nominationsJTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(nominationsJTextField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(okJButton)
