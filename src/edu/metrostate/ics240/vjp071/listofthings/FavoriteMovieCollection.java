@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package edu.metrstate.ics240.vjp071.listofthings;
+package edu.metrostate.ics240.vjp071.listofthings;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -794,8 +794,24 @@ public class FavoriteMovieCollection extends AbstractListModel<String> implement
     /**
      * Notifies listeners that the data at this index changed.
      * @param index the value of index
+     * @param fm
+     * @throws IndexOutOfBoundsException indicates that index is &lt; 0 or &gt;= size().
      */
-    public void fireUpdateAt(int index) {
+    public void updateAt(int index, FavoriteMovie fm) {
+        if (index < 0 || index >= numberOfMovies) {
+            throw new IndexOutOfBoundsException("index is out of bounds: index - " + index);
+        }
+        
+        FavoriteMovie t = movies[index];
+        
+        t.setImdb(fm.getImdb());
+        t.setTitle(fm.getTitle());
+        t.setReleaseDate(fm.getReleaseDate());
+        t.setDirector(fm.getDirector());
+        t.setWriter(fm.getWriter());
+        t.setGross(fm.getGross());
+        t.setNominations(fm.getNominations());
+        
         fireContentsChanged(this, index, index);
     }
 

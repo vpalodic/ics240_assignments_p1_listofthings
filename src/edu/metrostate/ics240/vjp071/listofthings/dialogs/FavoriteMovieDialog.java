@@ -3,12 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package edu.metrstate.ics240.vjp071.listofthings.dialogs;
+package edu.metrostate.ics240.vjp071.listofthings.dialogs;
 
-import edu.metrstate.ics240.vjp071.listofthings.FavoriteMovie;
+import edu.metrostate.ics240.vjp071.listofthings.FavoriteMovie;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import javax.swing.JDialog;
+import org.jdesktop.beansbinding.Converter;
 
 /**
  * An input form for displaying and modifying the properties of a single
@@ -18,14 +19,22 @@ import javax.swing.JDialog;
  */
 public class FavoriteMovieDialog extends JDialog {
 
-    private FavoriteMovie favoriteMovie;
-
-    public FavoriteMovie getFavoriteMovie() {
+    private boolean cancelled;
+    
+    public final FavoriteMovie getFavoriteMovie() {
         return favoriteMovie;
     }
 
-    public void setFavoriteMovie(FavoriteMovie favoriteMovie) {
-        this.favoriteMovie = favoriteMovie;
+    public final void setFavoriteMovie(FavoriteMovie fm) {
+        if (fm != null) {
+            favoriteMovie.setImdb(fm.getImdb());
+            favoriteMovie.setTitle(fm.getTitle());
+            favoriteMovie.setReleaseDate(fm.getReleaseDate());
+            favoriteMovie.setDirector(fm.getDirector());
+            favoriteMovie.setWriter(fm.getWriter());
+            favoriteMovie.setGross(fm.getGross());
+            favoriteMovie.setNominations(fm.getNominations());
+        }
     }
 
     /**
@@ -50,38 +59,22 @@ public class FavoriteMovieDialog extends JDialog {
     public FavoriteMovieDialog(java.awt.Frame parent, boolean modal, FavoriteMovie fm) {
         super(parent, modal);
         initComponents();
-        favoriteMovie = fm;
+        setFavoriteMovie(fm);
 
-        if (favoriteMovie != null) {
-            if (favoriteMovie.getImdb() != null) {
-                imdbJTextField.setText(favoriteMovie.getImdb().toString());
-            }
-            if (favoriteMovie.getTitle() != null && !favoriteMovie.getTitle().trim().isEmpty()) {
-                titleJTextField.setText(favoriteMovie.getTitle());
-            }
-            if (favoriteMovie.getReleaseDate() != null) {
-                releaseYearJTextField.setText(favoriteMovie.getReleaseDate().toString());
-            }
-            if (favoriteMovie.getDirector() != null) {
-                directorJTextField.setText(favoriteMovie.getDirector().toString());
-            }
-            if (favoriteMovie.getWriter() != null) {
-                writerJTextField.setText(favoriteMovie.getWriter().toString());
-            }
-            if (favoriteMovie.getGross() != null) {
-                grossJTextField.setText(String.format("%.2f", favoriteMovie.getGross()));
-            }
-            if (favoriteMovie.getNominations() != null) {
-                nominationsJTextField.setText(favoriteMovie.getNominations().toString());
-            }
-        }
-        
         okJButton.setEnabled(isValidMovie());
-        
-        getRootPane().setDefaultButton(okJButton);
-        pack();
+        cancelled = true;
     }
 
+    /**
+     * 
+     * @return 
+     */
+    public FavoriteMovieDialog setDefaultButtonAndPack() {
+        getRootPane().setDefaultButton(okJButton);
+        pack();
+        return this;
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -92,6 +85,7 @@ public class FavoriteMovieDialog extends JDialog {
     private void initComponents() {
         bindingGroup = new org.jdesktop.beansbinding.BindingGroup();
 
+        favoriteMovie = new edu.metrostate.ics240.vjp071.listofthings.FavoriteMovie();
         imdbJLabel = new javax.swing.JLabel();
         imdbJTextField = new javax.swing.JTextField();
         titleJLabel = new javax.swing.JLabel();
@@ -121,6 +115,10 @@ public class FavoriteMovieDialog extends JDialog {
 
         imdbJTextField.setToolTipText("Please enter the the IMDB number for this movie, if any. Limit 7 digits.");
         imdbJTextField.setPreferredSize(new java.awt.Dimension(125, 20));
+
+        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, favoriteMovie, org.jdesktop.beansbinding.ELProperty.create("${imdb}"), imdbJTextField, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        bindingGroup.addBinding(binding);
+
         imdbJTextField.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 FavoriteMovieDialog.this.keyReleased(evt);
@@ -133,6 +131,10 @@ public class FavoriteMovieDialog extends JDialog {
 
         titleJTextField.setToolTipText("Please enter the title of this movie, required. Limit 255 characters.");
         titleJTextField.setPreferredSize(new java.awt.Dimension(125, 20));
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, favoriteMovie, org.jdesktop.beansbinding.ELProperty.create("${title}"), titleJTextField, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        bindingGroup.addBinding(binding);
+
         titleJTextField.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 FavoriteMovieDialog.this.keyReleased(evt);
@@ -145,6 +147,43 @@ public class FavoriteMovieDialog extends JDialog {
 
         releaseYearJTextField.setToolTipText("Please enter the year, month, and day this movie was released in theaters (yyyy-MM-dd), if any.");
         releaseYearJTextField.setPreferredSize(new java.awt.Dimension(125, 20));
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, favoriteMovie, org.jdesktop.beansbinding.ELProperty.create("${releaseDate}"), releaseYearJTextField, org.jdesktop.beansbinding.BeanProperty.create("text_ON_ACTION_OR_FOCUS_LOST"));
+        binding.setConverter(new Converter<java.time.LocalDate, java.lang.String>()
+            {
+
+                @Override
+                public java.lang.String convertForward(java.time.LocalDate value)
+                {
+                    if (value == null) {
+                        return null;
+                    }
+
+                    return String.format("%s", value);
+                }
+
+                @Override
+                public java.time.LocalDate convertReverse(java.lang.String value)
+                {
+                    java.time.LocalDate releaseDate;
+
+                    if (value == null) {
+                        releaseDate = null;
+                    } else {
+                        try {
+                            value = value.trim();
+
+                            releaseDate = LocalDate.parse(value);
+                        } catch (DateTimeParseException ex) {
+                            releaseDate = null;
+                        }
+                    }
+                    return releaseDate;
+                }
+            }
+        );
+        bindingGroup.addBinding(binding);
+
         releaseYearJTextField.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 FavoriteMovieDialog.this.keyReleased(evt);
@@ -157,6 +196,10 @@ public class FavoriteMovieDialog extends JDialog {
 
         directorJTextField.setToolTipText("Please enter the name of the director for this movie, if any. Limit 120 characters.");
         directorJTextField.setPreferredSize(new java.awt.Dimension(125, 20));
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, favoriteMovie, org.jdesktop.beansbinding.ELProperty.create("${director}"), directorJTextField, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        bindingGroup.addBinding(binding);
+
         directorJTextField.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 FavoriteMovieDialog.this.keyReleased(evt);
@@ -169,6 +212,10 @@ public class FavoriteMovieDialog extends JDialog {
 
         writerJTextField.setToolTipText("Please enter the name of the writer for this movie, if any. Limit 120 characters.");
         writerJTextField.setPreferredSize(new java.awt.Dimension(125, 20));
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, favoriteMovie, org.jdesktop.beansbinding.ELProperty.create("${writer}"), writerJTextField, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        bindingGroup.addBinding(binding);
+
         writerJTextField.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 FavoriteMovieDialog.this.keyReleased(evt);
@@ -181,6 +228,43 @@ public class FavoriteMovieDialog extends JDialog {
 
         grossJTextField.setToolTipText("Please enter the Box Office Gross for this movie, if any.");
         grossJTextField.setPreferredSize(new java.awt.Dimension(125, 20));
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, favoriteMovie, org.jdesktop.beansbinding.ELProperty.create("${gross}"), grossJTextField, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        binding.setConverter(new Converter<java.lang.Double, java.lang.String>()
+            {
+
+                @Override
+                public java.lang.String convertForward(java.lang.Double value)
+                {
+                    if (value == null) {
+                        return null;
+                    }
+
+                    return String.format("%.2f", value);
+                }
+
+                @Override
+                public java.lang.Double convertReverse(java.lang.String value)
+                {
+                    java.lang.Double gross;
+
+                    if (value == null) {
+                        gross = null;
+                    } else {
+                        try {
+                            value = value.trim();
+
+                            gross = Double.parseDouble(value);
+                        } catch (NumberFormatException ex) {
+                            gross = null;
+                        }
+                    }
+                    return gross;
+                }
+            }
+        );
+        bindingGroup.addBinding(binding);
+
         grossJTextField.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 FavoriteMovieDialog.this.keyReleased(evt);
@@ -193,6 +277,10 @@ public class FavoriteMovieDialog extends JDialog {
 
         nominationsJTextField.setToolTipText("Please enter the number of Oscar nominations this movie received, if any.");
         nominationsJTextField.setPreferredSize(new java.awt.Dimension(125, 20));
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, favoriteMovie, org.jdesktop.beansbinding.ELProperty.create("${nominations}"), nominationsJTextField, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        bindingGroup.addBinding(binding);
+
         nominationsJTextField.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 FavoriteMovieDialog.this.keyReleased(evt);
@@ -202,7 +290,7 @@ public class FavoriteMovieDialog extends JDialog {
         okJButton.setText("OK");
         okJButton.setToolTipText("Press OK to add or update this movie in the collection.");
 
-        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, titleJTextField, org.jdesktop.beansbinding.ELProperty.create("${text.size > 0}"), okJButton, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, titleJTextField, org.jdesktop.beansbinding.ELProperty.create("${text.size > 0}"), okJButton, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
         bindingGroup.addBinding(binding);
 
         okJButton.addActionListener(new java.awt.event.ActionListener() {
@@ -237,14 +325,13 @@ public class FavoriteMovieDialog extends JDialog {
                     .addComponent(okJButton))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(titleJTextField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(releaseYearJTextField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(directorJTextField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(writerJTextField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(grossJTextField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(nominationsJTextField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(imdbJTextField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(titleJTextField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(releaseYearJTextField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(directorJTextField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(writerJTextField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(grossJTextField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(nominationsJTextField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(imdbJTextField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(cancelButton))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -294,16 +381,16 @@ public class FavoriteMovieDialog extends JDialog {
 
     private void okJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okJButtonActionPerformed
         // TODO add your handling code here:
-        String imdbString = null;
+        String imdbString;
         Integer imdb = null;
         String title = null;
-        String releaseDateString = null;
+        String releaseDateString;
         LocalDate releaseDate = null;
         String director = null;
         String writer = null;
-        String grossString = null;
+        String grossString;
         Double gross = null;
-        String nominationsString = null;
+        String nominationsString;
         Integer nominations = null;
 
         boolean validated = true;
@@ -311,9 +398,7 @@ public class FavoriteMovieDialog extends JDialog {
         if (imdbJTextField.getDocument() != null) {
             imdbString = imdbJTextField.getText();
 
-            if (imdbString == null || imdbString.trim().isEmpty()) {
-                imdbString = null;
-            } else {
+            if (imdbString != null && !imdbString.trim().isEmpty()) {
                 try {
                     imdbString = imdbString.trim();
 
@@ -350,9 +435,7 @@ public class FavoriteMovieDialog extends JDialog {
         if (releaseYearJTextField.getDocument() != null) {
             releaseDateString = releaseYearJTextField.getText();
 
-            if (releaseDateString == null || releaseDateString.trim().isEmpty()) {
-                releaseDateString = null;
-            } else {
+            if (releaseDateString != null && !releaseDateString.trim().isEmpty()) {
                 try {
                     releaseDateString = releaseDateString.trim();
 
@@ -394,9 +477,7 @@ public class FavoriteMovieDialog extends JDialog {
         if (grossJTextField.getDocument() != null) {
             grossString = grossJTextField.getText();
 
-            if (grossString == null || grossString.trim().isEmpty()) {
-                grossString = null;
-            } else {
+            if (grossString != null && !grossString.trim().isEmpty()) {
                 try {
                     grossString = grossString.trim();
 
@@ -414,9 +495,7 @@ public class FavoriteMovieDialog extends JDialog {
         if (nominationsJTextField.getDocument() != null) {
             nominationsString = nominationsJTextField.getText();
 
-            if (nominationsString == null || nominationsString.trim().isEmpty()) {
-                nominationsString = null;
-            } else {
+            if (nominationsString != null && !nominationsString.trim().isEmpty()) {
                 try {
                     nominationsString = nominationsString.trim();
 
@@ -432,21 +511,15 @@ public class FavoriteMovieDialog extends JDialog {
         }
 
         if (validated) {
-            if (favoriteMovie == null) {
-                favoriteMovie = new FavoriteMovie();
-            }
-
-            favoriteMovie.setImdb(imdb);
-            favoriteMovie.setTitle(title);
-            favoriteMovie.setReleaseDate(releaseDate);
-            favoriteMovie.setDirector(director);
-            favoriteMovie.setWriter(writer);
-            favoriteMovie.setGross(gross);
-            favoriteMovie.setNominations(nominations);
+            cancelled = false;
 
             dispose();
         }
     }//GEN-LAST:event_okJButtonActionPerformed
+
+    public boolean isCancelled() {
+        return cancelled;
+    }
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
         // TODO add your handling code here:
@@ -463,142 +536,78 @@ public class FavoriteMovieDialog extends JDialog {
     }//GEN-LAST:event_keyReleased
 
     private boolean isValidMovie() {
-        // TODO add your handling code here:
-        String imdbString = null;
-        Integer imdb = null;
-        String title = null;
-        String releaseDateString = null;
-        LocalDate releaseDate = null;
-        String director = null;
-        String writer = null;
-        String grossString = null;
-        Double gross = null;
-        String nominationsString = null;
-        Integer nominations = null;
+        Integer imdb;
+        String title;
+        String releaseDateString;
+        String director;
+        String writer;
+        Double gross;
+        Integer nominations;
 
         boolean validated = true;
 
-        if (imdbJTextField.getDocument() != null) {
-            imdbString = imdbJTextField.getText();
+        imdb = favoriteMovie.getImdb();
 
-            if (imdbString == null || imdbString.trim().isEmpty()) {
-                imdbString = null;
-            } else {
-                try {
-                    imdbString = imdbString.trim();
-
-                    if (imdbString.length() <= 7) {
-                        imdb = Integer.parseInt(imdbString);
-
-                        if (imdb < 0) {
-                            validated = false;
-                        }
-                    } else {
-                        validated = false;
-                    }
-                } catch (NumberFormatException ex) {
-                    validated = false;
-                }
-            }
+        if (imdb != null && imdb < 0) {
+            validated = false;
         }
 
-        if (titleJTextField.getDocument() != null) {
-            title = titleJTextField.getText();
+        title = favoriteMovie.getTitle();
 
-            if (title == null || title.trim().isEmpty()) {
-                title = null;
+        if (title == null || title.trim().isEmpty()) {
+            validated = false;
+        } else {
+            title = title.trim();
+
+            if (title.length() > 255) {
                 validated = false;
-            } else {
-                title = title.trim();
-
-                if (title.length() > 255) {
-                    validated = false;
-                }
             }
         }
 
         if (releaseYearJTextField.getDocument() != null) {
             releaseDateString = releaseYearJTextField.getText();
 
-            if (releaseDateString == null || releaseDateString.trim().isEmpty()) {
-                releaseDateString = null;
-            } else {
+            if (releaseDateString != null && !releaseDateString.trim().isEmpty()) {
                 try {
                     releaseDateString = releaseDateString.trim();
 
-                    releaseDate = LocalDate.parse(releaseDateString);
+                    LocalDate ld = LocalDate.parse(releaseDateString);
                 } catch (DateTimeParseException ex) {
                     validated = false;
                 }
             }
         }
 
-        if (directorJTextField.getDocument() != null) {
-            director = directorJTextField.getText();
+        director = favoriteMovie.getDirector();
 
-            if (director == null || director.trim().isEmpty()) {
-                director = null;
-            } else {
-                director = director.trim();
+        if (director != null && !director.trim().isEmpty()) {
+            director = director.trim();
 
-                if (director.length() > 120) {
-                    validated = false;
-                }
+            if (director.length() > 120) {
+                validated = false;
             }
         }
 
-        if (writerJTextField.getDocument() != null) {
-            writer = writerJTextField.getText();
+        writer = favoriteMovie.getWriter();
 
-            if (writer == null || writer.trim().isEmpty()) {
-                writer = null;
-            } else {
-                writer = writer.trim();
+        if (writer != null && !writer.trim().isEmpty()) {
+            writer = writer.trim();
 
-                if (writer.length() > 120) {
-                    validated = false;
-                }
+            if (writer.length() > 120) {
+                validated = false;
             }
         }
 
-        if (grossJTextField.getDocument() != null) {
-            grossString = grossJTextField.getText();
+        gross = favoriteMovie.getGross();
 
-            if (grossString == null || grossString.trim().isEmpty()) {
-                grossString = null;
-            } else {
-                try {
-                    grossString = grossString.trim();
-
-                    gross = Double.parseDouble(grossString);
-
-                    if (gross < 0) {
-                        validated = false;
-                    }
-                } catch (NumberFormatException ex) {
-                    validated = false;
-                }
-            }
+        if (gross != null && gross < 0) {
+            validated = false;
         }
 
-        if (nominationsJTextField.getDocument() != null) {
-            nominationsString = nominationsJTextField.getText();
+        nominations = favoriteMovie.getNominations();
 
-            if (nominationsString == null || nominationsString.trim().isEmpty()) {
-                nominationsString = null;
-            } else {
-                try {
-                    nominationsString = nominationsString.trim();
-
-                    nominations = Integer.parseInt(nominationsString);
-
-                    if (nominations < 0) {
-                        validated = false;
-                    }
-                } catch (NumberFormatException ex) {
-                    validated = false;
-                }
-            }
+        if (nominations != null && nominations < 0) {
+            validated = false;
         }
         return validated;
     }
@@ -631,17 +640,16 @@ public class FavoriteMovieDialog extends JDialog {
         //</editor-fold>
 
         /* Create and display the dialog */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                FavoriteMovieDialog dialog = new FavoriteMovieDialog(new javax.swing.JFrame(), true);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            FavoriteMovieDialog dialog = new FavoriteMovieDialog(new javax.swing.JFrame(), true);
+            dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                @Override
+                public void windowClosing(java.awt.event.WindowEvent e) {
+                    System.exit(0);
+                }
+            });
+            dialog.setDefaultButtonAndPack();
+            dialog.setVisible(true);
         });
     }
 
@@ -649,6 +657,7 @@ public class FavoriteMovieDialog extends JDialog {
     private javax.swing.JButton cancelButton;
     private javax.swing.JLabel directorJLabel;
     private javax.swing.JTextField directorJTextField;
+    private edu.metrostate.ics240.vjp071.listofthings.FavoriteMovie favoriteMovie;
     private javax.swing.JLabel grossJLabel;
     private javax.swing.JTextField grossJTextField;
     private javax.swing.JLabel imdbJLabel;

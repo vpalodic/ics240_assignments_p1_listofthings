@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package edu.metrstate.ics240.vjp071.listofthings;
+package edu.metrostate.ics240.vjp071.listofthings;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -117,6 +117,36 @@ public class FavoriteMovie implements Serializable {
             this.nominations = nominations1;
         } catch (NullPointerException | NumberFormatException ex) {
             
+        }
+    }
+
+    private FavoriteMovie(FavoriteMovie movie) {
+        if (movie == null) {
+            throw new IllegalArgumentException("move cannot be null.");
+        }
+        
+        if (movie.imdb != null) {
+            imdb = movie.imdb;
+        }
+        
+        if (movie.title != null) {
+            title = movie.title;
+        }
+        
+        if (movie.director != null) {
+            director = movie.director;
+        }
+        if (movie.writer != null) {
+            writer = movie.writer;
+        }
+        if (movie.gross != null) {
+            gross = movie.gross;
+        }
+        if (movie.nominations != null) {
+            nominations = movie.nominations;
+        }
+        if (movie.releaseDate != null) {
+            releaseDate = movie.releaseDate;
         }
     }
     
@@ -525,6 +555,18 @@ public class FavoriteMovie implements Serializable {
         return output.toString();
     }
     
+    public static FavoriteMovie fromFavoriteMovie(FavoriteMovie movie) {
+        FavoriteMovie answer = null;
+        
+        if (movie == null) {
+            return answer;
+        }
+        
+        answer = new FavoriteMovie(movie);
+        
+        return answer;
+    }
+        
     /**
      * Returns a new FavoriteMovie initialized from the passed in tab delimited string.
      * Empty values in the movie string should be represented as a space or else

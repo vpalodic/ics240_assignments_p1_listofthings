@@ -3,20 +3,18 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package edu.metrstate.ics240.vjp071.listofthings.forms;
+package edu.metrostate.ics240.vjp071.listofthings.forms;
 
-import edu.metrstate.ics240.vjp071.listofthings.FavoriteMovie;
-import edu.metrstate.ics240.vjp071.listofthings.FavoriteMovieCollection;
-import edu.metrstate.ics240.vjp071.listofthings.dialogs.FavoriteMovieDialog;
+import edu.metrostate.ics240.vjp071.listofthings.FavoriteMovie;
+import edu.metrostate.ics240.vjp071.listofthings.FavoriteMovieCollection;
+import edu.metrostate.ics240.vjp071.listofthings.dialogs.FavoriteMovieDialog;
 import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 
 /**
  * The main movie collection form where users can load and save collections and
@@ -51,70 +49,70 @@ public class FavoriteMovieCollectionForm extends JFrame {
         searchJButton.setEnabled(false);
         searchJTextField.setEnabled(false);
 
-        moviesJList.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-            /**
-             * This method responds to changes in the movie collection selection.
-             * @param e the selection event that triggered the event.
-             */
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                ListSelectionModel lsm = (ListSelectionModel) e.getSource();
-
-                if (lsm.isSelectionEmpty()) {
-                    editJButton.setEnabled(false);
-                    deleteJButton.setEnabled(false);
+        moviesJList.getSelectionModel().addListSelectionListener((ListSelectionEvent e) -> {
+            ListSelectionModel lsm = (ListSelectionModel) e.getSource();
+            
+            if (lsm.isSelectionEmpty()) {
+                editJButton.setEnabled(false);
+                deleteJButton.setEnabled(false);
+                if (searchJButton.isEnabled()) {
+                    getRootPane().setDefaultButton(searchJButton);
+                } else {
+                    getRootPane().setDefaultButton(addJButton);
+                }
+            } else {
+                // Find out which indexes are selected.
+                int minIndex = lsm.getMinSelectionIndex();
+                int maxIndex = lsm.getMaxSelectionIndex();
+                for (int i = minIndex; i <= maxIndex; i++) {
+                    if (lsm.isSelectedIndex(i)) {
+                        editJButton.setEnabled(true);
+                        editJButton.requestFocusInWindow();
+                        deleteJButton.setEnabled(true);
+                    }
                     if (searchJButton.isEnabled()) {
                         getRootPane().setDefaultButton(searchJButton);
                     } else {
                         getRootPane().setDefaultButton(addJButton);
                     }
+                }
+            }
+        } /**
+         * This method responds to changes in the movie collection selection.
+         * @param e the selection event that triggered the event.
+         */ );
+        
+        /**
+        * This method responds to changes in the movie collection.
+        * @param evt the property change that triggered the event.
+        */
+        movieCollection.addPropertyChangeListener((PropertyChangeEvent evt) -> {
+            if (evt.getPropertyName().equals("size")) {
+                if (!movieCollection.isEmpty()) {
+                    clearJButton.setEnabled(true);
+                    searchJButton.setEnabled(true);
+                    searchJTextField.setEnabled(true);
+                    getRootPane().setDefaultButton(searchJButton);
                 } else {
-                    // Find out which indexes are selected.
-                    int minIndex = lsm.getMinSelectionIndex();
-                    int maxIndex = lsm.getMaxSelectionIndex();
-                    for (int i = minIndex; i <= maxIndex; i++) {
-                        if (lsm.isSelectedIndex(i)) {
-                            editJButton.setEnabled(true);
-                            editJButton.requestFocusInWindow();
-                            deleteJButton.setEnabled(true);
-                        }
-                        if (searchJButton.isEnabled()) {
-                            getRootPane().setDefaultButton(searchJButton);
-                        } else {
-                            getRootPane().setDefaultButton(addJButton);
-                        }
-                    }
+                    clearJButton.setEnabled(false);
+                    searchJButton.setEnabled(false);
+                    searchJTextField.setEnabled(false);
+                    getRootPane().setDefaultButton(addJButton);
                 }
             }
         });
-        
-        movieCollection.addPropertyChangeListener(new PropertyChangeListener() {
-            /**
-             * This method responds to changes in the movie collection.
-             * @param evt the property change that triggered the event.
-             */
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                if (evt.getPropertyName().equals("size")) {
-                    if (!movieCollection.isEmpty()) {
-                        clearJButton.setEnabled(true);
-                        searchJButton.setEnabled(true);
-                        searchJTextField.setEnabled(true);
-                        getRootPane().setDefaultButton(searchJButton);
-                    } else {
-                        clearJButton.setEnabled(false);
-                        searchJButton.setEnabled(false);
-                        searchJTextField.setEnabled(false);
-                        getRootPane().setDefaultButton(addJButton);
-                    }
-                }
-            }
-        });
-        
-        getRootPane().setDefaultButton(addJButton);
-        pack();
     }
 
+    /**
+     * 
+     * @return 
+     */
+    public FavoriteMovieCollectionForm setDefaultButtonAndPack() {
+        getRootPane().setDefaultButton(addJButton);
+        pack();
+        return this;
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -297,13 +295,13 @@ public class FavoriteMovieCollectionForm extends JFrame {
     private void addJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addJButtonActionPerformed
         if (evt.getActionCommand().toLowerCase().equals("add")) {
             FavoriteMovieDialog fmd = new FavoriteMovieDialog(this, true);
-
+            fmd.setDefaultButtonAndPack();
             fmd.setVisible(true);
 
             FavoriteMovie fm = fmd.getFavoriteMovie();
 
-            if (fm != null) {
-                movieCollection.add(fm);
+            if (!fmd.isCancelled() && fm != null) {
+                movieCollection.add(FavoriteMovie.fromFavoriteMovie(fm));
                 searchJTextField.requestFocusInWindow();
             }
         }
@@ -317,11 +315,14 @@ public class FavoriteMovieCollectionForm extends JFrame {
                 FavoriteMovie fm = movieCollection.getAt(index);
 
                 FavoriteMovieDialog fmd = new FavoriteMovieDialog(this, true, fm);
-
+                fmd.setFavoriteMovie(fm);
+                fmd.setDefaultButtonAndPack();
                 fmd.setVisible(true);
 
-                movieCollection.fireUpdateAt(index);
-                searchJTextField.requestFocusInWindow();
+                if (!fmd.isCancelled()) {
+                    movieCollection.updateAt(index, fmd.getFavoriteMovie());
+                    searchJTextField.requestFocusInWindow();
+                }
             }
         }
     }//GEN-LAST:event_editJButtonActionPerformed
@@ -412,10 +413,8 @@ public class FavoriteMovieCollectionForm extends JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new FavoriteMovieCollectionForm().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new FavoriteMovieCollectionForm().setDefaultButtonAndPack().setVisible(true);
         });
     }
 

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package edu.metrstate.ics240.vjp071.listofthings;
+package edu.metrostate.ics240.vjp071.listofthings;
 
 import org.junit.Test;
 import static org.junit.Assert.*;
