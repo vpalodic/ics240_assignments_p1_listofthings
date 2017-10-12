@@ -380,137 +380,7 @@ public class FavoriteMovieDialog extends JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void okJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okJButtonActionPerformed
-        // TODO add your handling code here:
-        String imdbString;
-        Integer imdb = null;
-        String title = null;
-        String releaseDateString;
-        LocalDate releaseDate = null;
-        String director = null;
-        String writer = null;
-        String grossString;
-        Double gross = null;
-        String nominationsString;
-        Integer nominations = null;
-
-        boolean validated = true;
-
-        if (imdbJTextField.getDocument() != null) {
-            imdbString = imdbJTextField.getText();
-
-            if (imdbString != null && !imdbString.trim().isEmpty()) {
-                try {
-                    imdbString = imdbString.trim();
-
-                    if (imdbString.length() <= 7) {
-                        imdb = Integer.parseInt(imdbString);
-
-                        if (imdb < 0) {
-                            validated = false;
-                        }
-                    } else {
-                        validated = false;
-                    }
-                } catch (NumberFormatException ex) {
-                    validated = false;
-                }
-            }
-        }
-
-        if (titleJTextField.getDocument() != null) {
-            title = titleJTextField.getText();
-
-            if (title == null || title.trim().isEmpty()) {
-                title = null;
-                validated = false;
-            } else {
-                title = title.trim();
-
-                if (title.length() > 255) {
-                    validated = false;
-                }
-            }
-        }
-
-        if (releaseYearJTextField.getDocument() != null) {
-            releaseDateString = releaseYearJTextField.getText();
-
-            if (releaseDateString != null && !releaseDateString.trim().isEmpty()) {
-                try {
-                    releaseDateString = releaseDateString.trim();
-
-                    releaseDate = LocalDate.parse(releaseDateString);
-                } catch (DateTimeParseException ex) {
-                    validated = false;
-                }
-            }
-        }
-
-        if (directorJTextField.getDocument() != null) {
-            director = directorJTextField.getText();
-
-            if (director == null || director.trim().isEmpty()) {
-                director = null;
-            } else {
-                director = director.trim();
-
-                if (director.length() > 120) {
-                    validated = false;
-                }
-            }
-        }
-
-        if (writerJTextField.getDocument() != null) {
-            writer = writerJTextField.getText();
-
-            if (writer == null || writer.trim().isEmpty()) {
-                writer = null;
-            } else {
-                writer = writer.trim();
-
-                if (writer.length() > 120) {
-                    validated = false;
-                }
-            }
-        }
-
-        if (grossJTextField.getDocument() != null) {
-            grossString = grossJTextField.getText();
-
-            if (grossString != null && !grossString.trim().isEmpty()) {
-                try {
-                    grossString = grossString.trim();
-
-                    gross = Double.parseDouble(grossString);
-
-                    if (gross < 0) {
-                        validated = false;
-                    }
-                } catch (NumberFormatException ex) {
-                    validated = false;
-                }
-            }
-        }
-
-        if (nominationsJTextField.getDocument() != null) {
-            nominationsString = nominationsJTextField.getText();
-
-            if (nominationsString != null && !nominationsString.trim().isEmpty()) {
-                try {
-                    nominationsString = nominationsString.trim();
-
-                    nominations = Integer.parseInt(nominationsString);
-
-                    if (nominations < 0) {
-                        validated = false;
-                    }
-                } catch (NumberFormatException ex) {
-                    validated = false;
-                }
-            }
-        }
-
-        if (validated) {
+        if (isValidMovie()) {
             cancelled = false;
 
             dispose();
@@ -598,10 +468,22 @@ public class FavoriteMovieDialog extends JDialog {
             }
         }
 
-        gross = favoriteMovie.getGross();
+        if (grossJTextField.getDocument() != null) {
+            String grossString = grossJTextField.getText();
 
-        if (gross != null && gross < 0) {
-            validated = false;
+            if (grossString != null && !grossString.trim().isEmpty()) {
+                try {
+                    grossString = grossString.trim();
+
+                    gross = Double.parseDouble(grossString);
+
+                    if (gross < 0) {
+                        validated = false;
+                    }
+                } catch (NumberFormatException ex) {
+                    validated = false;
+                }
+            }
         }
 
         nominations = favoriteMovie.getNominations();
